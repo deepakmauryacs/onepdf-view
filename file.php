@@ -196,7 +196,8 @@ if (!empty($perms['analytics'])) {
     linkSvc.setDocument(doc, null);
     pdfHistory.initialize({ fingerprint: doc.fingerprints?.[0] || String(Date.now()) });
     pdfViewer.setDocument(doc);
-    pdfViewer.currentScaleValue = 'page-width';
+    // Use page-fit on small screens to show the whole page by default
+    pdfViewer.currentScaleValue = window.matchMedia('(max-width: 600px)').matches ? 'page-fit' : 'page-width';
     updateZoomLabel();
 
     await buildThumbnails(doc);
