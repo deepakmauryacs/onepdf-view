@@ -1,0 +1,29 @@
+<?php
+require_once __DIR__ . '/../config.php';
+header('Content-Type: application/json');
+
+$email = $_POST['email'] ?? '';
+$password = $_POST['password'] ?? '';
+$errors = [];
+if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $errors[] = 'Valid email is required';
+}
+if (!$password) {
+    $errors[] = 'Password is required';
+}
+if ($errors) {
+    echo json_encode(['error' => implode(', ', $errors)]);
+    exit;
+}
+
+$stmt = $pdo->prepare('SELECT * FROM users WHERE email = ? LIMIT 1');
+$stmt->execute([$email]);
+$user = $stmt->fetch();
+if ($user && password_verify($password, $user['password'])) {
+    $_SESSION['user_id'] = $user['id'];
+    $_SESSION['user_name'] = $user['first_name'];
+    echo json_encode(['success' => true]);
+} else {
+    echo json_encode(['error' => 'Invalid credentials']);
+}
+?>
