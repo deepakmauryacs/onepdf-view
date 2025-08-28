@@ -92,6 +92,12 @@ if (!empty($perms['analytics'])) {
   .side-tabs .tb{background:var(--ui-bar-darker)}
   .side-tabs .tb.active{outline:2px solid var(--ui-accent);outline-offset:-2px}
   #thumbnailView{padding:12px;overflow:auto;flex:1}
+  #outlineView{padding:12px;overflow:auto;flex:1;font-size:14px;display:none}
+  #outlineView ul{list-style:none;margin:0;padding-left:0}
+  .outline-item{display:flex;align-items:center;gap:4px;padding:4px 0;cursor:pointer;color:var(--ui-ink)}
+  .outline-item i{font-size:12px}
+  .outline-item:hover{color:var(--ui-accent)}
+  .outline-children{padding-left:16px}
   .thumb{border:1px solid var(--ui-border);border-radius:10px;background:color-mix(in srgb, var(--ui-bg) 92%, black 8%);margin-bottom:12px;padding:6px;cursor:pointer}
   .thumb.selected{outline:2px solid var(--ui-accent);outline-offset:2px}
   .thumb canvas{width:100%;display:block}
@@ -157,10 +163,11 @@ if (!empty($perms['analytics'])) {
 <div class="sheet" id="sheet">
   <aside class="sidebar" id="sidebar">
     <div class="side-tabs">
-      <button class="tb active" title="Thumbnails"><i class="bi bi-grid-3x3-gap"></i></button>
-      <button class="tb" title="Outlines (coming soon)" disabled><i class="bi bi-list-task"></i></button>
+      <button class="tb active" id="thumbTab" title="Thumbnails"><i class="bi bi-grid-3x3-gap"></i></button>
+      <button class="tb" id="outlineTab" title="Outlines"><i class="bi bi-list-task"></i></button>
     </div>
     <div id="thumbnailView"></div>
+    <div id="outlineView"></div>
   </aside>
 
   <main class="viewer">
@@ -191,6 +198,10 @@ if (!empty($perms['analytics'])) {
   linkSvc.setViewer(pdfViewer);
 
   let pdfDoc = null;
+  const thumbTab   = document.getElementById('thumbTab');
+  const outlineTab = document.getElementById('outlineTab');
+  const thumbView  = document.getElementById('thumbnailView');
+  const outlineView = document.getElementById('outlineView');
 
   pdfjsLib.getDocument(pdfUrl).promise.then(async (doc) => {
     pdfDoc = doc;
@@ -199,14 +210,29 @@ if (!empty($perms['analytics'])) {
     pdfViewer.currentScaleValue = 'page-width';
     updateZoomLabel();
     await buildThumbnails(doc);
+    const outline = await doc.getOutline();
+    buildOutline(outline);
     pageCount.textContent = doc.numPages;
   }).catch(err => {
     console.error(err);
     alert('Failed to load PDF.');
   });
 
+  /* ---------- Sidebar Tabs ---------- */
+  thumbTab.onclick = () => {
+    thumbTab.classList.add('active');
+    outlineTab.classList.remove('active');
+    thumbView.style.display = '';
+    outlineView.style.display = 'none';
+  };
+  outlineTab.onclick = () => {
+    outlineTab.classList.add('active');
+    thumbTab.classList.remove('active');
+    outlineView.style.display = '';
+    thumbView.style.display = 'none';
+  };
+
   /* ---------- Thumbnails ---------- */
-  const thumbView = document.getElementById('thumbnailView');
   async function buildThumbnails(doc){
     thumbView.innerHTML = '';
     const maxW = 220;
@@ -244,6 +270,53 @@ if (!empty($perms['analytics'])) {
       body:'event=page&slug='+encodeURIComponent(slug)+'&page='+n
     }).catch(()=>{});
   });
+
+  /* ---------- Outline ---------- */
+  function buildOutline(outline){
+    outlineView.innerHTML = '';
+    if (!outline){
+      outlineView.textContent = 'No outline available';
+      return;
+    }
+    const render = (items, parent) => {
+      const ul = document.createElement('ul');
+      parent.appendChild(ul);
+      items.forEach(it => {
+        const li = document.createElement('li');
+        ul.appendChild(li);
+
+        const row = document.createElement('div');
+        row.className = 'outline-item';
+        li.appendChild(row);
+
+        const text = document.createElement('span');
+        text.textContent = it.title || '';
+        row.appendChild(text);
+        text.onclick = () => { if (it.dest) linkSvc.navigateTo(it.dest); };
+
+        if (it.items && it.items.length){
+          const caret = document.createElement('i');
+          caret.className = 'bi bi-caret-right';
+          row.prepend(caret);
+
+          const child = document.createElement('div');
+          child.className = 'outline-children';
+          child.style.display = 'none';
+          li.appendChild(child);
+
+          caret.onclick = (e) => {
+            e.stopPropagation();
+            const open = child.style.display === 'none';
+            child.style.display = open ? 'block' : 'none';
+            caret.className = 'bi ' + (open ? 'bi-caret-down' : 'bi-caret-right');
+          };
+
+          render(it.items, child);
+        }
+      });
+    };
+    render(outline, outlineView);
+  }
 
   /* ---------- Zoom ---------- */
   const zoomBtn   = document.getElementById('zoomBtn');
