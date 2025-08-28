@@ -90,9 +90,11 @@
 </head>
 <body class="d-flex align-items-center min-vh-100">
     <div class="container py-5">
-        <div class="card-container">
-            <h3 class="text-center mb-4">Create Account 📦</h3>
-            <form id="registerForm" novalidate>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-container">
+                    <h3 class="text-center mb-4">Create Account 📦</h3>
+                    <form id="registerForm" novalidate>
                 <div class="row g-3">
                     <div class="col-md-6">
                         <div class="form-floating mb-3">
@@ -120,7 +122,13 @@
                     <label for="company">Company</label>
                 </div>
                 <div id="company_error" class="error-message"></div>
-                
+
+                <div class="form-floating mb-3">
+                    <input type="text" name="dob" class="form-control" id="dob" placeholder="dd-mm-yyyy" required pattern="\d{2}-\d{2}-\d{4}">
+                    <label for="dob">Date of Birth (dd-mm-yyyy)</label>
+                </div>
+                <div id="dob_error" class="error-message"></div>
+
                 <div class="form-floating mb-3">
                     <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com" required>
                     <label for="email">Email address</label>
@@ -153,8 +161,10 @@
                 <div class="d-grid gap-2">
                     <button type="submit" class="btn btn-primary btn-lg">Register</button>
                 </div>
-            </form>
-            <div id="regAlert" class="mt-3"></div>
+                    </form>
+                    <div id="regAlert" class="mt-3"></div>
+                </div>
+            </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -191,6 +201,12 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     if (!data.get('company')) {
         document.getElementById('company_error').textContent = 'Company is required.';
         document.getElementById('company').classList.add('is-invalid');
+        valid = false;
+    }
+    const dob = data.get('dob');
+    if (!dob || !/^\d{2}-\d{2}-\d{4}$/.test(dob)) {
+        document.getElementById('dob_error').textContent = 'Date of birth must be in dd-mm-yyyy format.';
+        document.getElementById('dob').classList.add('is-invalid');
         valid = false;
     }
     const email = data.get('email');
