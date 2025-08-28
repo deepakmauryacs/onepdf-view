@@ -1,0 +1,3 @@
+RewriteEngine On
+RewriteRule ^file/([a-zA-Z0-9]+)$ file.php?code=$1 [L,QSA]
+
