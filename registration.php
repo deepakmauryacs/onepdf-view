@@ -221,7 +221,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
         return;
     }
 
-    const res = await fetch('api/_save_user.php', {
+    const res = await fetch('vendor_dashboard/api/_save_user.php', {
         method: 'POST',
         body: data
     });

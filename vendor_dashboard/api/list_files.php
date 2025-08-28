@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../../config.php';
 
 $result = $mysqli->query("SELECT id, filename, size, filepath FROM documents ORDER BY uploaded_at DESC");
 $files = [];

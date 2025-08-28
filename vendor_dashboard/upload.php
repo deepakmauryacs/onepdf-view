@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/../config.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,7 +30,7 @@ require_once __DIR__ . '/config.php';
                     <li><a href="change_password.php">Change Password</a></li>
                 </ul>
             </li>
-            <li><a href="logout.php">Logout</a></li>
+            <li><a href="../logout.php">Logout</a></li>
         </ul>
     </nav>
     <div class="container-fluid p-4">
