@@ -212,6 +212,9 @@ if (!empty($perms['analytics'])) {
     await buildThumbnails(doc);
     const outline = await doc.getOutline();
     buildOutline(outline);
+    if (outline && outline.length) {
+      outlineTab.click();
+    }
     pageCount.textContent = doc.numPages;
   }).catch(err => {
     console.error(err);
@@ -278,7 +281,7 @@ if (!empty($perms['analytics'])) {
       outlineView.textContent = 'No outline available';
       return;
     }
-    const render = (items, parent) => {
+    const render = (items, parent, depth = 0) => {
       const ul = document.createElement('ul');
       parent.appendChild(ul);
       items.forEach(it => {
@@ -296,26 +299,27 @@ if (!empty($perms['analytics'])) {
 
         if (it.items && it.items.length){
           const caret = document.createElement('i');
-          caret.className = 'bi bi-caret-right';
+          const open = depth < 1; // expand first level by default
+          caret.className = 'bi ' + (open ? 'bi-caret-down' : 'bi-caret-right');
           row.prepend(caret);
 
           const child = document.createElement('div');
           child.className = 'outline-children';
-          child.style.display = 'none';
+          child.style.display = open ? 'block' : 'none';
           li.appendChild(child);
 
           caret.onclick = (e) => {
             e.stopPropagation();
-            const open = child.style.display === 'none';
-            child.style.display = open ? 'block' : 'none';
-            caret.className = 'bi ' + (open ? 'bi-caret-down' : 'bi-caret-right');
+            const isOpen = child.style.display === 'none';
+            child.style.display = isOpen ? 'block' : 'none';
+            caret.className = 'bi ' + (isOpen ? 'bi-caret-down' : 'bi-caret-right');
           };
 
-          render(it.items, child);
+          render(it.items, child, depth + 1);
         }
       });
     };
-    render(outline, outlineView);
+    render(outline, outlineView, 0);
   }
 
   /* ---------- Zoom ---------- */
