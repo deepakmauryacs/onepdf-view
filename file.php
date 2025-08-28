@@ -117,7 +117,7 @@ $showSearchUi  = $allowSearch && false; // keep hidden to match requested UI
   .thumb canvas{width:100%;display:block}
 
   .viewer{position:relative;background:color-mix(in srgb, var(--ui-bg) 70%, black 10%);height:100%}
-  #viewerContainer{height:100%;overflow:auto}
+  #viewerContainer{position:absolute;inset:0;overflow:auto}
   .pdfViewer .page{margin:10px auto;background:#fff;border-radius:10px;border:1px solid #d7dae0}
 
   .search{display:flex;align-items:center;gap:8px;background:var(--ui-bar-darker);border:1px solid var(--ui-border);border-radius:20px;padding:0 10px;height:32px}
