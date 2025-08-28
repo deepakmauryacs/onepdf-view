@@ -135,7 +135,7 @@
         return;
       }
      
-      const res = await fetch('api/_login_user.php', {
+      const res = await fetch('vendor_dashboard/api/_login_user.php', {
         method: 'POST',
         body: data
       });
