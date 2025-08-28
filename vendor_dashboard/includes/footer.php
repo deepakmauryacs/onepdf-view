@@ -1,5 +1,27 @@
+<style>
+  /* Fixed footer variant */
+  .sticky-footer.is-fixed{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 14rem;                 /* SB Admin 2 default sidebar width */
+    z-index: 1030;
+    border-top: 1px solid #e5e7eb;
+    background: #fff;
+  }
+
+  /* When body has sidebar toggled (collapsed) OR on small screens, take full width */
+  body.sidebar-toggled .sticky-footer.is-fixed,
+  @media (max-width: 768px){
+    .sticky-footer.is-fixed{ left: 0; }
+  }
+
+  /* Avoid content hiding behind fixed footer */
+  #content-wrapper{ padding-bottom: 60px; }  /* footer height approx */
+</style>
+
     <!-- Footer -->
-    <footer class="sticky-footer bg-white">
+    <footer class="sticky-footer bg-white is-fixed">
         <div class="container my-auto">
             <div class="copyright text-center my-auto">
                 <span>Copyright &copy; Your Website <?php echo date('Y'); ?></span>
