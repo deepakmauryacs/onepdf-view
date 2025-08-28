@@ -24,8 +24,6 @@ if (!empty($perms['analytics'])) {
     $ins->bind_param('i', $linkId);
     $ins->execute();
 }
-$allowSearch   = !empty($perms['search']);
-$showSearchUi  = $allowSearch && false; // keep hidden to match requested UI
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -42,24 +40,13 @@ $showSearchUi  = $allowSearch && false; // keep hidden to match requested UI
 <style>
   /* ---------- LIGHT as default ---------- */
   :root{
-    --ui-bg:#f4f6f9;
-    --ui-bar:#eef1f6;
-    --ui-bar-darker:#e6eaf1;
-    --ui-ink:#0f172a;
-    --ui-muted:#64748b;
-    --ui-border:#d7dae0;
-    --ui-accent:#7c3aed;
-  }
-
-  /* ---------- DARK overrides when body[data-theme="dark"] is present ---------- */
-  body[data-theme="dark"]{
-    --ui-bg:#0f1115;
-    --ui-bar:#2f343a;
-    --ui-bar-darker:#262a30;
-    --ui-ink:#e6e8eb;
+    --ui-bg:#111315;
+    --ui-bar:#2b3034;
+    --ui-bar-darker:#23272b;
+    --ui-ink:#ffffff;
     --ui-muted:#9aa4b2;
     --ui-border:#3d434b;
-    --ui-accent:#8b5cf6;
+    --ui-accent:#4c8bf5;
   }
 
   *{box-sizing:border-box}
@@ -76,35 +63,28 @@ $showSearchUi  = $allowSearch && false; // keep hidden to match requested UI
   .topbar{
     height:48px;
     background:var(--ui-bar);
-    display:flex;align-items:center;gap:10px;padding:0 12px;
+    display:flex;align-items:center;gap:10px;padding:0 16px;
     border-bottom:1px solid var(--ui-border);
     position:sticky;top:0;z-index:50
   }
   .tb{
-    height:32px;min-width:32px;border:1px solid var(--ui-border);
-    color:var(--ui-ink);background:var(--ui-bar-darker);
-    border-radius:8px;display:inline-flex;align-items:center;justify-content:center;
+    height:32px;min-width:32px;border:0;
+    color:var(--ui-ink);background:transparent;
+    border-radius:4px;display:inline-flex;align-items:center;justify-content:center;
     padding:0 8px;cursor:pointer
   }
-  .tb:hover{border-color:color-mix(in srgb, var(--ui-border) 60%, var(--ui-ink) 40%)}
+  .tb:hover{background:rgba(255,255,255,0.1)}
   .tb i{font-size:16px}
   .spacer{flex:1 1 auto}
 
   .zoom-wrap{position:relative}
-  .zoom-btn{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+  .zoom-btn{display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--ui-ink)}
   .zoom-menu{
     position:absolute;top:38px;left:0;min-width:180px;background:color-mix(in srgb, var(--ui-bar) 70%, black 10%);
     border:1px solid var(--ui-border);border-radius:8px;padding:6px;display:none;z-index:40
   }
   .zoom-menu .item{display:flex;align-items:center;height:34px;padding:0 10px;border-radius:8px;color:var(--ui-ink);cursor:pointer;white-space:nowrap}
   .zoom-menu .item:hover{background:color-mix(in srgb, var(--ui-bar) 50%, black 10%)}
-
-  .menu{
-    position:absolute;top:38px;right:0;min-width:210px;background:color-mix(in srgb, var(--ui-bar) 70%, black 10%);
-    border:1px solid var(--ui-border);border-radius:8px;padding:8px;display:none;z-index:40
-  }
-  .menu .row{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:10px;border-radius:8px;cursor:pointer}
-  .menu .row:hover{background:color-mix(in srgb, var(--ui-bar) 50%, black 10%)}
 
   .sheet{display:grid;grid-template-columns:260px 1fr;height:calc(100vh - 48px)}
   .sidebar{border-right:1px solid var(--ui-border);background:color-mix(in srgb, var(--ui-bg) 80%, black 10%);display:flex;flex-direction:column;min-width:220px;max-width:340px}
@@ -126,6 +106,9 @@ $showSearchUi  = $allowSearch && false; // keep hidden to match requested UI
   ::-webkit-scrollbar{width:10px;height:10px}
   ::-webkit-scrollbar-thumb{background:color-mix(in srgb, var(--ui-border) 40%, var(--ui-ink) 40%);border-radius:999px}
   ::-webkit-scrollbar-track{background:color-mix(in srgb, var(--ui-bg) 70%, black 15%)}
+
+  .page-info{display:flex;align-items:center;gap:6px;color:var(--ui-ink)}
+  .page-info input{width:40px;height:26px;border:1px solid var(--ui-border);background:var(--ui-bar-darker);color:var(--ui-ink);text-align:center;border-radius:4px}
 </style>
 </head>
 <body>
@@ -133,10 +116,19 @@ $showSearchUi  = $allowSearch && false; // keep hidden to match requested UI
 <div class="topbar">
   <button class="tb" id="toggleSidebar" title="Toggle sidebar"><i class="bi bi-layout-sidebar"></i></button>
 
+  <button class="tb" id="prevPage" title="Previous page"><i class="bi bi-chevron-left"></i></button>
+  <div class="page-info">
+    <input type="text" id="pageNumber" value="1" />
+    <span id="pageCount">0</span>
+  </div>
+  <button class="tb" id="nextPage" title="Next page"><i class="bi bi-chevron-right"></i></button>
+
+  <div class="spacer"></div>
+
   <button class="tb" id="zoomOut" title="Zoom out"><i class="bi bi-dash-lg"></i></button>
 
   <div class="zoom-wrap">
-    <button class="tb zoom-btn" id="zoomBtn"><span id="zoomLabel">100%</span> <i class="bi bi-caret-up-fill"></i></button>
+    <button class="tb zoom-btn" id="zoomBtn"><span id="zoomLabel">100%</span> <i class="bi bi-caret-down-fill"></i></button>
     <div class="zoom-menu" id="zoomMenu">
       <div class="item" data-scale="page-width">Fit to Width</div>
       <div class="item" data-scale="page-fit">Fit to Page</div>
@@ -157,23 +149,9 @@ $showSearchUi  = $allowSearch && false; // keep hidden to match requested UI
 
   <div class="spacer"></div>
 
-  <?php if ($showSearchUi) { ?>
-  <div class="search" id="searchWrap">
-    <i class="bi bi-search" style="opacity:.8"></i>
-    <input id="searchInput" type="text" placeholder="Find in document…" />
-    <button class="tb" id="findPrev" title="Prev"><i class="bi bi-chevron-up"></i></button>
-    <button class="tb" id="findNext" title="Next"><i class="bi bi-chevron-down"></i></button>
-  </div>
-  <div class="spacer" style="flex:0 0 8px"></div>
-  <?php } ?>
-
-  <div style="position:relative">
-    <button class="tb" id="gearBtn" title="Settings"><i class="bi bi-gear"></i></button>
-    <div class="menu" id="gearMenu">
-      <div class="row" id="goFullscreen"><span><i class="bi bi-arrows-fullscreen"></i>&nbsp;Fullscreen</span></div>
-      <div class="row" id="toggleThemeRow"><span><i class="bi bi-brightness-high"></i>&nbsp;<span id="themeLabel">Light mode</span></span></div>
-    </div>
-  </div>
+  <button class="tb" id="printBtn" title="Print"><i class="bi bi-printer"></i></button>
+  <a class="tb" id="downloadBtn" title="Download" href="<?php echo htmlspecialchars($pdfUrl); ?>" download><i class="bi bi-download"></i></a>
+  <a class="tb" id="openNew" title="Open in new tab" href="<?php echo htmlspecialchars($pdfUrl); ?>" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>
 </div>
 
 <div class="sheet" id="sheet">
@@ -196,29 +174,18 @@ $showSearchUi  = $allowSearch && false; // keep hidden to match requested UI
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.js"></script>
 <script>
 (() => {
-  /* ---------- Theme control ---------- */
-  // Start in DARK to match your last screenshots. Toggle flips body[data-theme].
-  let dark = true;
-  const themeLabel = document.getElementById('themeLabel');
-  function setTheme(){
-    if (dark) { document.body.setAttribute('data-theme','dark'); themeLabel.textContent = 'Light mode'; }
-    else      { document.body.removeAttribute('data-theme');   themeLabel.textContent = 'Dark mode'; }
-  }
-  setTheme();
-
   /* ---------- PDF.js ---------- */
   pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
   const pdfUrl = <?php echo json_encode($pdfUrl); ?>;
-  const showSearch = <?php echo $showSearchUi ? 'true' : 'false'; ?>;
   const slug = <?php echo json_encode($slug); ?>;
+  const pageNumber = document.getElementById('pageNumber');
+  const pageCount  = document.getElementById('pageCount');
 
   const eventBus   = new pdfjsViewer.EventBus();
   const container  = document.getElementById('viewerContainer');
   const linkSvc    = new pdfjsViewer.PDFLinkService({ eventBus });
-  const findCtrl   = new pdfjsViewer.PDFFindController({ eventBus, linkService: linkSvc });
-
   const pdfViewer = new pdfjsViewer.PDFViewer({
-    container, eventBus, linkService: linkSvc, findController: findCtrl,
+    container, eventBus, linkService: linkSvc,
     maxCanvasPixels: 0, textLayerMode: 2, removePageBorders: true
   });
   linkSvc.setViewer(pdfViewer);
@@ -229,10 +196,10 @@ $showSearchUi  = $allowSearch && false; // keep hidden to match requested UI
     pdfDoc = doc;
     pdfViewer.setDocument(doc);
     linkSvc.setDocument(doc);
-    findCtrl.setDocument(doc);
     pdfViewer.currentScaleValue = 'page-width';
     updateZoomLabel();
     await buildThumbnails(doc);
+    pageCount.textContent = doc.numPages;
   }).catch(err => {
     console.error(err);
     alert('Failed to load PDF.');
@@ -271,6 +238,7 @@ $showSearchUi  = $allowSearch && false; // keep hidden to match requested UI
   eventBus.on('pagechanging', (e) => {
     const n = e.pageNumber || pdfViewer.currentPageNumber;
     selectThumb(n);
+    pageNumber.value = n;
     fetch('track.php', {
       method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'},
       body:'event=page&slug='+encodeURIComponent(slug)+'&page='+n
@@ -285,8 +253,7 @@ $showSearchUi  = $allowSearch && false; // keep hidden to match requested UI
   const toggleMenu = el => el.style.display = (el.style.display==='block'?'none':'block');
   const closeMenu  = el => el && (el.style.display='none');
 
-  let gearMenu;
-  document.addEventListener('click', ()=>{ closeMenu(zoomMenu); closeMenu(gearMenu); });
+  document.addEventListener('click', ()=>{ closeMenu(zoomMenu); });
 
   zoomBtn.onclick = (e)=>{ e.stopPropagation(); toggleMenu(zoomMenu); };
   zoomMenu.querySelectorAll('.item').forEach(it=>{
@@ -311,27 +278,22 @@ $showSearchUi  = $allowSearch && false; // keep hidden to match requested UI
     }
   }
 
-  /* ---------- Optional search (hidden per your spec) ---------- */
-  if (showSearch){
-    const q = document.getElementById('searchInput');
-    const doFind = back => findCtrl.executeCommand('find', { query:q.value||'', highlightAll:true, findPrevious:!!back });
-    document.getElementById('findNext').onclick = ()=>doFind(false);
-    document.getElementById('findPrev').onclick = ()=>doFind(true);
-    q.addEventListener('keydown', (e)=>{ if (e.key==='Enter') doFind(e.shiftKey); });
-  } else {
-    const sw = document.getElementById('searchWrap'); if (sw) sw.style.display='none';
-  }
-
-  /* ---------- Gear menu (Fullscreen + Theme) ---------- */
-  const gearBtnEl  = document.getElementById('gearBtn');
-  gearMenu = document.getElementById('gearMenu');
-  gearBtnEl.onclick = (e)=>{ e.stopPropagation(); toggleMenu(gearMenu); };
-
-  document.getElementById('goFullscreen').onclick = ()=>{
-    const el = document.documentElement;
-    if (!document.fullscreenElement) el.requestFullscreen?.(); else document.exitFullscreen?.();
+  /* ---------- Page navigation ---------- */
+  document.getElementById('prevPage').onclick = ()=>{
+    if (pdfViewer.currentPageNumber > 1) pdfViewer.currentPageNumber--;
   };
-  document.getElementById('toggleThemeRow').onclick = ()=>{ dark = !dark; setTheme(); };
+  document.getElementById('nextPage').onclick = ()=>{
+    if (pdfViewer.currentPageNumber < (pdfDoc?.numPages||1)) pdfViewer.currentPageNumber++;
+  };
+  pageNumber.addEventListener('keydown', (e)=>{
+    if (e.key==='Enter' && pdfDoc){
+      const v = parseInt(pageNumber.value,10);
+      if (v>=1 && v<=pdfDoc.numPages) pdfViewer.currentPageNumber = v;
+    }
+  });
+
+  /* ---------- Print ---------- */
+  document.getElementById('printBtn').onclick = ()=>window.print();
 
   /* ---------- Sidebar toggle ---------- */
   const sidebar = document.getElementById('sidebar');
