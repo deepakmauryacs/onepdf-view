@@ -356,7 +356,10 @@ if (!empty($perms['analytics'])) {
     open = !open;
     sidebar.style.display = open ? '' : 'none';
     sheet.style.gridTemplateColumns = open ? '260px 1fr' : '1fr';
-    setTimeout(()=>{ pdfViewer.currentScaleValue = pdfViewer.currentScaleValue; }, 50);
+    // Avoid setting an invalid scale value when the sidebar toggles.
+    // Using the harder relayout routine ensures the viewer reflows
+    // without attempting to apply a "null" zoom level.
+    setTimeout(relayoutHard, 50);
   };
 
   // Keep stable on any future container size change
