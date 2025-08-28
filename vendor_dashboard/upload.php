@@ -15,10 +15,7 @@ include 'includes/topbar.php';
     padding: 36px;
     transition: all .2s ease;
   }
-  .upload-drop.is-dragover {
-    border-color: #8b5cf6; /* purple-ish highlight */
-    background: #f5f3ff;
-  }
+  .upload-drop.is-dragover { border-color: #8b5cf6; background: #f5f3ff; }
   .upload-drop .cloud { font-size: 40px; opacity: .7; }
   .upload-drop .browse { color: #6d28d9; text-decoration: underline; cursor: pointer; }
   .muted { color: #6b7280; }
@@ -42,10 +39,28 @@ include 'includes/topbar.php';
   .badge-secure { background:#16a34a; color:#fff; border-radius: 999px; padding: .25rem .5rem; font-weight:600; }
 
   /* Small helpers */
-  .icon-btn {
-    border: 1px solid #d1d5db; background: #fff; border-radius: 8px; padding: .35rem .6rem;
-  }
+  .icon-btn { border: 1px solid #d1d5db; background: #fff; border-radius: 8px; padding: .35rem .6rem; }
   .icon-btn i { vertical-align: middle; }
+
+  /* ============================
+     FIX: Search input group radius
+     ============================ */
+  .mf-search > .input-group-prepend .input-group-text{
+    background:#fff;
+    border-top-left-radius: var(--ui-radius, 10px) !important;
+    border-bottom-left-radius: var(--ui-radius, 10px) !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-right: 0 !important;                 /* remove seam */
+    display:flex; align-items:center;            /* vertical align icon */
+  }
+  .mf-search > .form-control{
+    border-top-right-radius: var(--ui-radius, 10px) !important;
+    border-bottom-right-radius: var(--ui-radius, 10px) !important;
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-left: 0 !important;                  /* remove seam */
+  }
 </style>
 
 <div class="container-fluid">
@@ -83,9 +98,12 @@ include 'includes/topbar.php';
       <div class="font-weight-bold">
         <i class="bi bi-folder2-open mr-2"></i> Managed Files <span class="badge badge-primary ml-1" id="filesCount">0</span>
       </div>
-      <div class="input-group" style="max-width:280px;">
-        <div class="input-group-prepend"><span class="input-group-text"><i class="bi bi-search"></i></span></div>
-        <input id="searchFiles" type="text" class="form-control" placeholder="Search files...">
+      <!-- add mf-search class here -->
+      <div class="input-group mf-search" style="max-width:280px;">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="bi bi-search"></i></span>
+        </div>
+        <input id="searchFiles" type="text" class="form-control" placeholder="Search files..." autocomplete="off">
       </div>
     </div>
     <div class="card-body p-0">
