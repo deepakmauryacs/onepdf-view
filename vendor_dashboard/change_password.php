@@ -164,7 +164,7 @@ document.querySelectorAll('.toggle-pass').forEach(function(icon){
 
     try{
       const formData = new FormData(form);
-      const res = await fetch('../api/_change_password.php', { method:'POST', body: formData });
+      const res = await fetch('api/_change_password.php', { method:'POST', body: formData });
       const result = await res.json();
       if(result.success){
         alert('Password updated successfully');
