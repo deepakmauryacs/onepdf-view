@@ -28,6 +28,7 @@ $pdo->exec("CREATE TABLE IF NOT EXISTS users (
     company VARCHAR(100) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
+    dob DATE NOT NULL,
     agreed_terms TINYINT(1) NOT NULL DEFAULT 0
 )");
 ?>
