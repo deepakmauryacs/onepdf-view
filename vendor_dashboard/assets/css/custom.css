@@ -1,10 +1,10 @@
 /* ------------------------------------------------------
-   SB Admin 2 — Custom tweaks (Boxy UI + Inter font)
+   SB Admin 2 — Custom tweaks (Boxy UI + DM Sans font)
    Version: 1.0
 -------------------------------------------------------*/
 
-/* 1) Inter font */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+/* 1) DM Sans font */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&display=swap');
 
 :root{
   /* Subtle gray palette for borders */
@@ -19,7 +19,7 @@
 
 /* 2) Global font + colors */
 html, body{
-  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol", sans-serif;
+  font-family: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol", sans-serif;
   color: #111827;
   background: var(--ui-bg);
   -webkit-font-smoothing: antialiased;
