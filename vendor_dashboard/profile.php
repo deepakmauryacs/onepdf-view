@@ -212,7 +212,7 @@ include(INCLUDE_PATH . 'topbar.php');   // top navbar
 
     try{
       const formData = new FormData(form);
-      const res = await fetch('../api/_update_user.php', { method:'POST', body: formData });
+      const res = await fetch('api/_update_user.php', { method:'POST', body: formData });
       const result = await res.json();
       if(result.success){
         alert('Profile updated successfully');
