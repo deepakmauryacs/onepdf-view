@@ -22,7 +22,10 @@ $slug = bin2hex(random_bytes(5));
 // Build base URL dynamically for localhost or production
 $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
 $host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$url    = $scheme . $host . '/file/' . $slug;
+// Determine the application's base path (e.g. "/onepdf-view") so generated
+// links work whether the project lives in a subdirectory or at the web root.
+$basePath = rtrim(dirname(dirname(dirname($_SERVER['SCRIPT_NAME'] ?? ''))), '/');
+$url      = $scheme . $host . $basePath . '/file/' . $slug;
 
 $stmt = $mysqli->prepare("INSERT INTO links (document_id, slug, permissions) VALUES (?,?,?)");
 $stmt->bind_param('iss', $id, $slug, $permJson);
