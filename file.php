@@ -351,7 +351,9 @@ if (!empty($perms['analytics'])) {
 
   /* ---------- Sidebar toggle ---------- */
   const sidebar = document.getElementById('sidebar');
-  let open = true;
+  let open = false;
+  sidebar.style.display = 'none';
+  sheet.style.gridTemplateColumns = '1fr';
   document.getElementById('toggleSidebar').onclick = ()=>{
     open = !open;
     sidebar.style.display = open ? '' : 'none';
