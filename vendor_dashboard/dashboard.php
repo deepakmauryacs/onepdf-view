@@ -1,4 +1,9 @@
-<?php 
+<?php
+require_once '../config.php';
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../login.php');
+    exit;
+}
 // Define the base path for includes
 define('INCLUDE_PATH', __DIR__ . '/includes/');
 
