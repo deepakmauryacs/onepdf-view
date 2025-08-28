@@ -18,7 +18,11 @@ if ($perms === null) {
 
 // Generate unique slug
 $slug = bin2hex(random_bytes(5));
-$url  = 'https://onepdf.io/file/' . $slug;
+
+// Build base URL dynamically for localhost or production
+$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+$host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$url    = $scheme . $host . '/file/' . $slug;
 
 $stmt = $mysqli->prepare("INSERT INTO links (document_id, slug, permissions) VALUES (?,?,?)");
 $stmt->bind_param('iss', $id, $slug, $permJson);
