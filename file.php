@@ -91,7 +91,7 @@ if (!empty($perms['analytics'])) {
   .side-tabs{display:flex;gap:8px;padding:10px;border-bottom:1px solid var(--ui-border)}
   .side-tabs .tb{background:var(--ui-bar-darker)}
   .side-tabs .tb.active{outline:2px solid var(--ui-accent);outline-offset:-2px}
-  #thumbnailView{padding:12px;overflow:auto;flex:1}
+  #thumbnailView{padding:12px;overflow:auto;flex:1;display:none}
   #outlineView{padding:12px;overflow:auto;flex:1;font-size:14px;display:none}
   #outlineView ul{list-style:none;margin:0;padding-left:0}
   .outline-item{display:flex;align-items:center;gap:4px;padding:4px 0;cursor:pointer;color:var(--ui-ink)}
@@ -163,7 +163,7 @@ if (!empty($perms['analytics'])) {
 <div class="sheet" id="sheet">
   <aside class="sidebar" id="sidebar">
     <div class="side-tabs">
-      <button class="tb active" id="thumbTab" title="Thumbnails"><i class="bi bi-grid-3x3-gap"></i></button>
+      <button class="tb" id="thumbTab" title="Thumbnails"><i class="bi bi-grid-3x3-gap"></i></button>
       <button class="tb" id="outlineTab" title="Outlines"><i class="bi bi-list-task"></i></button>
     </div>
     <div id="thumbnailView"></div>
@@ -213,7 +213,15 @@ if (!empty($perms['analytics'])) {
     const outline = await doc.getOutline();
     buildOutline(outline);
     if (outline && outline.length) {
-      outlineTab.click();
+      outlineTab.classList.add('active');
+      thumbTab.classList.remove('active');
+      outlineView.style.display = '';
+      thumbView.style.display = 'none';
+    } else {
+      thumbTab.classList.add('active');
+      outlineTab.classList.remove('active');
+      thumbView.style.display = '';
+      outlineView.style.display = 'none';
     }
     pageCount.textContent = doc.numPages;
   }).catch(err => {
