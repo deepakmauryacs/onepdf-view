@@ -1,26 +1,28 @@
 <?php
 require_once __DIR__ . '/../../config.php';
 
-if (!isset($_FILES['pdf'])) {
+// Support uploads sent as either `file` or `pdf`
+$key = isset($_FILES['file']) ? 'file' : (isset($_FILES['pdf']) ? 'pdf' : null);
+if ($key === null) {
     http_response_code(400);
     echo json_encode(['error' => 'No file uploaded']);
     exit;
 }
 
-$file = $_FILES['pdf'];
+$file = $_FILES[$key];
 if ($file['error'] !== UPLOAD_ERR_OK) {
     http_response_code(400);
     echo json_encode(['error' => 'Upload failed']);
     exit;
 }
 
-// Validate file type
+// Validate file type (PDF or image)
 $finfo = finfo_open(FILEINFO_MIME_TYPE);
 $mime = finfo_file($finfo, $file['tmp_name']);
 finfo_close($finfo);
-if ($mime !== 'application/pdf') {
+if (strpos($mime, 'application/pdf') !== 0 && strpos($mime, 'image/') !== 0) {
     http_response_code(400);
-    echo json_encode(['error' => 'Only PDF files are allowed']);
+    echo json_encode(['error' => 'Only PDF or image files are allowed']);
     exit;
 }
 
