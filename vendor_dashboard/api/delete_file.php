@@ -19,7 +19,7 @@ if (!$stmt->fetch()) {
 }
 $stmt->close();
 
-$fullPath = __DIR__ . '/../uploads/' . $filepath;
+$fullPath = dirname(__DIR__, 2) . '/' . $filepath;
 if (file_exists($fullPath)) {
     unlink($fullPath);
 }
