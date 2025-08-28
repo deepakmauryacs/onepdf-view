@@ -123,11 +123,6 @@
                 </div>
                 <div id="company_error" class="error-message"></div>
 
-                <div class="form-floating mb-3">
-                    <input type="text" name="dob" class="form-control" id="dob" placeholder="dd-mm-yyyy" required pattern="\d{2}-\d{2}-\d{4}">
-                    <label for="dob">Date of Birth (dd-mm-yyyy)</label>
-                </div>
-                <div id="dob_error" class="error-message"></div>
 
                 <div class="form-floating mb-3">
                     <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com" required>
@@ -201,12 +196,6 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     if (!data.get('company')) {
         document.getElementById('company_error').textContent = 'Company is required.';
         document.getElementById('company').classList.add('is-invalid');
-        valid = false;
-    }
-    const dob = data.get('dob');
-    if (!dob || !/^\d{2}-\d{2}-\d{4}$/.test(dob)) {
-        document.getElementById('dob_error').textContent = 'Date of birth must be in dd-mm-yyyy format.';
-        document.getElementById('dob').classList.add('is-invalid');
         valid = false;
     }
     const email = data.get('email');

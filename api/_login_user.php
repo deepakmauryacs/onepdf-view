@@ -16,9 +16,11 @@ if ($errors) {
     exit;
 }
 
-$stmt = $pdo->prepare('SELECT * FROM users WHERE email = ? LIMIT 1');
-$stmt->execute([$email]);
-$user = $stmt->fetch();
+$stmt = $mysqli->prepare('SELECT * FROM users WHERE email = ? LIMIT 1');
+$stmt->bind_param('s', $email);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
 if ($user && password_verify($password, $user['password'])) {
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['user_name'] = $user['first_name'];
