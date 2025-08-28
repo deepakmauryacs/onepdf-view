@@ -218,14 +218,14 @@ include 'includes/topbar.php';
             <button class="btn btn-outline-primary btn-sm btn-icon generate" data-id="${f.id}">
               <i class="bi bi-link-45deg"></i> Generate
             </button>
-            <button class="btn btn-outline-secondary btn-sm btn-icon copy" ${url ? '' : 'disabled'} data-url="${url}">
+            <button class="btn btn-outline-secondary btn-sm btn-icon copy" data-url="${url}" ${url ? '' : 'disabled'}>
               <i class="bi bi-clipboard"></i> Copy
             </button>
             <button class="btn btn-outline-danger btn-sm delete" data-id="${f.id}">
               <i class="bi bi-trash"></i>
             </button>
           </div>
-          <div class="small text-muted mt-1 link-holder"></div>
+          <div class="small text-muted mt-1 link-holder">${url ? `<code>${url}</code>` : ''}</div>
         </td>
       `);
       $tbody.append($tr);
