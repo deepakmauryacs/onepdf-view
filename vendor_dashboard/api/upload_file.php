@@ -16,7 +16,7 @@ if ($file['error'] !== UPLOAD_ERR_OK) {
 
 // Validate file type
 $finfo = finfo_open(FILEINFO_MIME_TYPE);
-$mime = finfo_file(finfo, $file['tmp_name']);
+$mime = finfo_file($finfo, $file['tmp_name']);
 finfo_close($finfo);
 if ($mime !== 'application/pdf') {
     http_response_code(400);
@@ -32,7 +32,7 @@ if ($file['size'] > $maxSize) {
     exit;
 }
 
-$uploadDir = __DIR__ . '/../uploads/';
+$uploadDir = dirname(__DIR__, 2) . '/uploads/';
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0777, true);
 }
@@ -52,7 +52,7 @@ if (!move_uploaded_file($file['tmp_name'], $target)) {
 }
 
 $stmt = $mysqli->prepare("INSERT INTO documents (filename, filepath, size) VALUES (?,?,?)");
-$relative = basename($target);
+$relative = 'uploads/' . basename($target);
 $stmt->bind_param('ssi', $filename, $relative, $file['size']);
 $stmt->execute();
 

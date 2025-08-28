@@ -46,8 +46,7 @@ $('#uploadForm').on('submit', function(e){
         contentType: false,
         processData: false,
         success: function(){
-            $('#alert').html('<div class="alert alert-success">Uploaded</div>');
-            loadFiles();
+            window.location.reload();
         },
         error: function(xhr){
             var msg = xhr.responseJSON ? xhr.responseJSON.error : 'Upload failed';
