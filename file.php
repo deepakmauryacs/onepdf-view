@@ -38,83 +38,60 @@ if (!empty($perms['analytics'])) {
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.css"/>
 
 <style>
-  /* ---------- LIGHT as default ---------- */
   :root{
-    --ui-bg:#111315;
-    --ui-bar:#2b3034;
-    --ui-bar-darker:#23272b;
-    --ui-ink:#ffffff;
-    --ui-muted:#9aa4b2;
-    --ui-border:#3d434b;
-    --ui-accent:#4c8bf5;
+    --ui-bg:#111315; --ui-bar:#2b3034; --ui-bar-darker:#23272b;
+    --ui-ink:#ffffff; --ui-muted:#9aa4b2; --ui-border:#3d434b; --ui-accent:#4c8bf5; --side-w:260px;
   }
-
   *{box-sizing:border-box}
   html,body{height:100%}
-  body{
-    margin:0;
-    background:var(--ui-bg);
-    color:var(--ui-ink);
-    font-family:"DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-    transition: background .15s ease, color .15s ease;
-  }
+  body{ margin:0; height:100vh; overflow:hidden; background:var(--ui-bg); color:var(--ui-ink); font-family:"DM Sans",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif; }
 
-  /* Top bar */
-  .topbar{
-    height:48px;
-    background:var(--ui-bar);
-    display:flex;align-items:center;gap:10px;padding:0 16px;
-    border-bottom:1px solid var(--ui-border);
-    position:sticky;top:0;z-index:50
-  }
-  .tb{
-    height:32px;min-width:32px;border:0;
-    color:var(--ui-ink);background:transparent;
-    border-radius:4px;display:inline-flex;align-items:center;justify-content:center;
-    padding:0 8px;cursor:pointer
-  }
-  .tb:hover{background:rgba(255,255,255,0.1)}
-  .tb i{font-size:16px}
+  .topbar{ height:48px; background:var(--ui-bar); display:flex; align-items:center; gap:10px; padding:0 16px; border-bottom:1px solid var(--ui-border); }
+  .tb{ height:32px; min-width:32px; border:0; color:var(--ui-ink); background:transparent; border-radius:4px; display:inline-flex; align-items:center; justify-content:center; padding:0 8px; cursor:pointer }
+  .tb:hover{ background:rgba(255,255,255,0.1) }
+  .tb i{ font-size:16px }
   .spacer{flex:1 1 auto}
 
   .zoom-wrap{position:relative}
   .zoom-btn{display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--ui-ink)}
-  .zoom-menu{
-    position:absolute;top:38px;left:0;min-width:180px;background:color-mix(in srgb, var(--ui-bar) 70%, black 10%);
-    border:1px solid var(--ui-border);border-radius:8px;padding:6px;display:none;z-index:40
-  }
-  .zoom-menu .item{display:flex;align-items:center;height:34px;padding:0 10px;border-radius:8px;color:var(--ui-ink);cursor:pointer;white-space:nowrap}
-  .zoom-menu .item:hover{background:color-mix(in srgb, var(--ui-bar) 50%, black 10%)}
+  .zoom-menu{ position:absolute; top:38px; left:0; min-width:180px; background:color-mix(in srgb, var(--ui-bar) 70%, black 10%); border:1px solid var(--ui-border); border-radius:8px; padding:6px; display:none; z-index:40 }
+  .zoom-menu .item{ display:flex; align-items:center; height:34px; padding:0 10px; border-radius:8px; color:var(--ui-ink); cursor:pointer; white-space:nowrap }
+  .zoom-menu .item:hover{ background:color-mix(in srgb, var(--ui-bar) 50%, black 10%) }
 
-  .sheet{display:grid;grid-template-columns:260px 1fr;height:calc(100vh - 48px)}
-  .sidebar{border-right:1px solid var(--ui-border);background:color-mix(in srgb, var(--ui-bg) 80%, black 10%);display:flex;flex-direction:column;min-width:220px;max-width:340px}
-  .side-tabs{display:flex;gap:8px;padding:10px;border-bottom:1px solid var(--ui-border)}
-  .side-tabs .tb{background:var(--ui-bar-darker)}
-  .side-tabs .tb.active{outline:2px solid var(--ui-accent);outline-offset:-2px}
-  #thumbnailView{padding:12px;overflow:auto;flex:1;display:none}
-  #outlineView{padding:12px;overflow:auto;flex:1;font-size:14px;display:none}
-  #outlineView ul{list-style:none;margin:0;padding-left:0}
-  .outline-item{display:flex;align-items:center;gap:4px;padding:4px 0;cursor:pointer;color:var(--ui-ink)}
-  .outline-item i{font-size:12px}
-  .outline-item:hover{color:var(--ui-accent)}
-  .outline-children{padding-left:16px}
-  .thumb{border:1px solid var(--ui-border);border-radius:10px;background:color-mix(in srgb, var(--ui-bg) 92%, black 8%);margin-bottom:12px;padding:6px;cursor:pointer}
-  .thumb.selected{outline:2px solid var(--ui-accent);outline-offset:2px}
-  .thumb canvas{width:100%;display:block}
+  /* GRID: second column must be minmax(0,1fr) */
+  .sheet{ display:grid; grid-template-columns: var(--side-w) minmax(0,1fr); height: calc(100vh - 48px); }
+  .sheet.hide-side{ grid-template-columns: 0 minmax(0,1fr); }
 
-  .viewer{position:relative;background:color-mix(in srgb, var(--ui-bg) 70%, black 10%);height:100%}
-  #viewerContainer{position:absolute;inset:0;overflow:auto}
-  .pdfViewer .page{margin:10px auto;background:#fff;border-radius:10px;border:1px solid #d7dae0}
+  .sidebar{ border-right:1px solid var(--ui-border); background:color-mix(in srgb, var(--ui-bg) 80%, black 10%); display:flex; flex-direction:column; min-width:0; overflow:hidden; }
+  .sheet.hide-side .sidebar{ display:none; }
 
-  .search{display:flex;align-items:center;gap:8px;background:var(--ui-bar-darker);border:1px solid var(--ui-border);border-radius:20px;padding:0 10px;height:32px}
-  .search input{border:0;outline:0;height:28px;width:260px;color:var(--ui-ink);background:transparent;font:inherit}
+  .side-tabs{ display:flex; gap:8px; padding:10px; border-bottom:1px solid var(--ui-border) }
+  .side-tabs .tb{ background:var(--ui-bar-darker) }
+  .side-tabs .tb.active{ outline:2px solid var(--ui-accent); outline-offset:-2px }
 
-  ::-webkit-scrollbar{width:10px;height:10px}
-  ::-webkit-scrollbar-thumb{background:color-mix(in srgb, var(--ui-border) 40%, var(--ui-ink) 40%);border-radius:999px}
-  ::-webkit-scrollbar-track{background:color-mix(in srgb, var(--ui-bg) 70%, black 15%)}
+  #thumbnailView{ padding:12px; overflow:auto; flex:1; display:none }
+  #outlineView{ padding:12px; overflow:auto; flex:1; font-size:14px; display:none }
+  #outlineView ul{ list-style:none; margin:0; padding-left:0 }
+  .outline-item{ display:flex; align-items:center; gap:6px; padding:6px 4px; cursor:pointer; color:var(--ui-ink); border-radius:6px; }
+  .outline-item:hover{ background:rgba(255,255,255,.06); color:var(--ui-accent) }
+  .outline-children{ padding-left:16px }
 
-  .page-info{display:flex;align-items:center;gap:6px;color:var(--ui-ink)}
-  .page-info input{width:40px;height:26px;border:1px solid var(--ui-border);background:var(--ui-bar-darker);color:var(--ui-ink);text-align:center;border-radius:4px}
+  .thumb{ border:1px solid var(--ui-border); border-radius:10px; background:color-mix(in srgb, var(--ui-bg) 92%, black 8%); margin-bottom:12px; padding:6px; cursor:pointer }
+  .thumb.selected{ outline:2px solid var(--ui-accent); outline-offset:2px }
+  .thumb canvas{ width:100%; display:block }
+
+  /* CRITICAL: min-width:0 on flex/grid children so they can shrink/grow */
+  .viewer{ position:relative; background:color-mix(in srgb, var(--ui-bg) 70%, black 10%); height:100%; min-width:0; }
+  #viewerContainer{ position:absolute; inset:0; overflow:auto; width:100%; height:100%; min-width:0; }
+  #viewer{ min-width:0; }
+  .pdfViewer .page{ margin:10px auto; background:#fff; border-radius:10px; border:1px solid #d7dae0 }
+
+  ::-webkit-scrollbar{ width:10px; height:10px }
+  ::-webkit-scrollbar-thumb{ background:color-mix(in srgb, var(--ui-border) 40%, var(--ui-ink) 40%); border-radius:999px }
+  ::-webkit-scrollbar-track{ background:color-mix(in srgb, var(--ui-bg) 70%, black 15%) }
+
+  .page-info{ display:flex; align-items:center; gap:6px; color:var(--ui-ink) }
+  .page-info input{ width:40px; height:26px; border:1px solid var(--ui-border); background:var(--ui-bar-darker); color:var(--ui-ink); text-align:center; border-radius:4px }
 </style>
 </head>
 <body>
@@ -155,9 +132,9 @@ if (!empty($perms['analytics'])) {
 
   <div class="spacer"></div>
 
-  <button class="tb" id="printBtn" title="Print"><i class="bi bi-printer"></i></button>
-  <a class="tb" id="downloadBtn" title="Download" href="<?php echo htmlspecialchars($pdfUrl); ?>" download><i class="bi bi-download"></i></a>
-  <a class="tb" id="openNew" title="Open in new tab" href="<?php echo htmlspecialchars($pdfUrl); ?>" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>
+  <a class="tb" id="downloadBtn" title="Download" href="<?php echo htmlspecialchars($pdfUrl); ?>" download>
+    <i class="bi bi-download"></i>
+  </a>
 </div>
 
 <div class="sheet" id="sheet">
@@ -181,46 +158,54 @@ if (!empty($perms['analytics'])) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.js"></script>
 <script>
 (() => {
-  /* ---------- PDF.js ---------- */
   pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
   const pdfUrl = <?php echo json_encode($pdfUrl); ?>;
-  const slug = <?php echo json_encode($slug); ?>;
+  const slug   = <?php echo json_encode($slug); ?>;
+
   const pageNumber = document.getElementById('pageNumber');
   const pageCount  = document.getElementById('pageCount');
+  const sheet      = document.getElementById('sheet');
+  const container  = document.getElementById('viewerContainer');
 
   const eventBus   = new pdfjsViewer.EventBus();
-  const container  = document.getElementById('viewerContainer');
+
   const linkSvc    = new pdfjsViewer.PDFLinkService({ eventBus });
-  const pdfViewer = new pdfjsViewer.PDFViewer({
+  const pdfHistory = new pdfjsViewer.PDFHistory({ eventBus, linkService: linkSvc });
+  linkSvc.setHistory(pdfHistory);
+
+  const pdfViewer  = new pdfjsViewer.PDFViewer({
     container, eventBus, linkService: linkSvc,
     maxCanvasPixels: 0, textLayerMode: 2, removePageBorders: true
   });
   linkSvc.setViewer(pdfViewer);
 
   let pdfDoc = null;
-  const thumbTab   = document.getElementById('thumbTab');
-  const outlineTab = document.getElementById('outlineTab');
-  const thumbView  = document.getElementById('thumbnailView');
+  const thumbTab    = document.getElementById('thumbTab');
+  const outlineTab  = document.getElementById('outlineTab');
+  const thumbView   = document.getElementById('thumbnailView');
   const outlineView = document.getElementById('outlineView');
 
   pdfjsLib.getDocument(pdfUrl).promise.then(async (doc) => {
     pdfDoc = doc;
+    linkSvc.setDocument(doc, null);
+    pdfHistory.initialize({ fingerprint: doc.fingerprints?.[0] || String(Date.now()) });
     pdfViewer.setDocument(doc);
-    linkSvc.setDocument(doc);
     pdfViewer.currentScaleValue = 'page-width';
     updateZoomLabel();
+
     await buildThumbnails(doc);
     const outline = await doc.getOutline();
     buildOutline(outline);
+
     if (outline && outline.length) {
       outlineTab.classList.add('active');
       thumbTab.classList.remove('active');
-      outlineView.style.display = '';
+      outlineView.style.display = 'block';
       thumbView.style.display = 'none';
     } else {
       thumbTab.classList.add('active');
       outlineTab.classList.remove('active');
-      thumbView.style.display = '';
+      thumbView.style.display = 'block';
       outlineView.style.display = 'none';
     }
     pageCount.textContent = doc.numPages;
@@ -229,21 +214,21 @@ if (!empty($perms['analytics'])) {
     alert('Failed to load PDF.');
   });
 
-  /* ---------- Sidebar Tabs ---------- */
+  /* Tabs */
   thumbTab.onclick = () => {
     thumbTab.classList.add('active');
     outlineTab.classList.remove('active');
-    thumbView.style.display = '';
+    thumbView.style.display = 'block';
     outlineView.style.display = 'none';
   };
   outlineTab.onclick = () => {
     outlineTab.classList.add('active');
     thumbTab.classList.remove('active');
-    outlineView.style.display = '';
+    outlineView.style.display = 'block';
     thumbView.style.display = 'none';
   };
 
-  /* ---------- Thumbnails ---------- */
+  /* Thumbnails */
   async function buildThumbnails(doc){
     thumbView.innerHTML = '';
     const maxW = 220;
@@ -267,14 +252,16 @@ if (!empty($perms['analytics'])) {
       page.render({ canvasContext: ctx, viewport }).promise.then(()=> page.cleanup?.());
       wrap.onclick = () => { pdfViewer.currentPageNumber = i; };
     }
-    selectThumb(1);
+    selectThumb(1, true);
   }
-  function selectThumb(n){
+  function selectThumb(n, center=false){
     [...thumbView.querySelectorAll('.thumb')].forEach(el => el.classList.toggle('selected', +el.dataset.page === +n));
+    const el = thumbView.querySelector(`.thumb[data-page="${n}"]`);
+    if (center && el) el.scrollIntoView({ block:'nearest' });
   }
   eventBus.on('pagechanging', (e) => {
     const n = e.pageNumber || pdfViewer.currentPageNumber;
-    selectThumb(n);
+    selectThumb(n, true);
     pageNumber.value = n;
     fetch('track.php', {
       method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'},
@@ -282,71 +269,51 @@ if (!empty($perms['analytics'])) {
     }).catch(()=>{});
   });
 
-  /* ---------- Outline ---------- */
+  /* Outline navigation */
   function buildOutline(outline){
     outlineView.innerHTML = '';
-    if (!outline){
-      outlineView.textContent = 'No outline available';
-      return;
-    }
-    const render = (items, parent, depth = 0) => {
+    if (!outline){ outlineView.textContent = 'No outline available'; return; }
+    const render = (items, parent) => {
       const ul = document.createElement('ul');
       parent.appendChild(ul);
       items.forEach(it => {
         const li = document.createElement('li');
         ul.appendChild(li);
-
         const row = document.createElement('div');
         row.className = 'outline-item';
         li.appendChild(row);
-
         const text = document.createElement('span');
         text.textContent = it.title || '';
+        text.style.flex = '1';
         row.appendChild(text);
-        text.onclick = () => { if (it.dest) linkSvc.navigateTo(it.dest); };
-
+        row.addEventListener('click', ()=>{
+          if (it.url) window.open(it.url, '_blank', 'noopener,noreferrer');
+          if (it.dest) linkSvc.goToDestination(it.dest);
+        });
         if (it.items && it.items.length){
-          const caret = document.createElement('i');
-          const open = depth < 1; // expand first level by default
-          caret.className = 'bi ' + (open ? 'bi-caret-down' : 'bi-caret-right');
-          row.prepend(caret);
-
           const child = document.createElement('div');
           child.className = 'outline-children';
-          child.style.display = open ? 'block' : 'none';
           li.appendChild(child);
-
-          caret.onclick = (e) => {
-            e.stopPropagation();
-            const isOpen = child.style.display === 'none';
-            child.style.display = isOpen ? 'block' : 'none';
-            caret.className = 'bi ' + (isOpen ? 'bi-caret-down' : 'bi-caret-right');
-          };
-
-          render(it.items, child, depth + 1);
+          render(it.items, child);
         }
       });
     };
-    render(outline, outlineView, 0);
+    render(outline, outlineView);
   }
 
-  /* ---------- Zoom ---------- */
+  /* Zoom */
   const zoomBtn   = document.getElementById('zoomBtn');
   const zoomMenu  = document.getElementById('zoomMenu');
   const zoomLabel = document.getElementById('zoomLabel');
 
-  const toggleMenu = el => el.style.display = (el.style.display==='block'?'none':'block');
-  const closeMenu  = el => el && (el.style.display='none');
-
-  document.addEventListener('click', ()=>{ closeMenu(zoomMenu); });
-
-  zoomBtn.onclick = (e)=>{ e.stopPropagation(); toggleMenu(zoomMenu); };
+  document.addEventListener('click', ()=>{ zoomMenu.style.display='none'; });
+  zoomBtn.onclick = (e)=>{ e.stopPropagation(); zoomMenu.style.display = (zoomMenu.style.display==='block'?'none':'block'); };
   zoomMenu.querySelectorAll('.item').forEach(it=>{
     it.onclick = ()=>{
       const v = it.dataset.scale;
       if (['page-width','page-fit','page-actual','auto'].includes(v)) pdfViewer.currentScaleValue = v;
       else pdfViewer.currentScale = Math.max(0.25, Math.min(4, parseFloat(v)));
-      closeMenu(zoomMenu); updateZoomLabel();
+      zoomMenu.style.display='none'; updateZoomLabel();
     };
   });
 
@@ -354,22 +321,12 @@ if (!empty($perms['analytics'])) {
   document.getElementById('zoomOut').onclick = ()=>{ pdfViewer.currentScale = Math.max(0.25, (pdfViewer.currentScale||1)/1.1); updateZoomLabel(); };
   eventBus.on('scalechanging', updateZoomLabel);
   function updateZoomLabel(){
-    const val = pdfViewer.currentScaleValue;
-    if (typeof val === 'string'){
-      const map = { 'page-width':'Fit to Width', 'page-fit':'Fit to Page', 'page-actual':'Actual Size', 'auto':'Auto Zoom' };
-      zoomLabel.textContent = map[val] ?? (Math.round((pdfViewer.currentScale||1)*100)+'%');
-    } else {
-      zoomLabel.textContent = Math.round((pdfViewer.currentScale||1)*100) + '%';
-    }
+    zoomLabel.textContent = Math.round((pdfViewer.currentScale||1)*100) + '%';
   }
 
-  /* ---------- Page navigation ---------- */
-  document.getElementById('prevPage').onclick = ()=>{
-    if (pdfViewer.currentPageNumber > 1) pdfViewer.currentPageNumber--;
-  };
-  document.getElementById('nextPage').onclick = ()=>{
-    if (pdfViewer.currentPageNumber < (pdfDoc?.numPages||1)) pdfViewer.currentPageNumber++;
-  };
+  /* Page navigation */
+  document.getElementById('prevPage').onclick = ()=>{ if (pdfViewer.currentPageNumber > 1) pdfViewer.currentPageNumber--; };
+  document.getElementById('nextPage').onclick = ()=>{ if (pdfViewer.currentPageNumber < (pdfDoc?.numPages||1)) pdfViewer.currentPageNumber++; };
   pageNumber.addEventListener('keydown', (e)=>{
     if (e.key==='Enter' && pdfDoc){
       const v = parseInt(pageNumber.value,10);
@@ -377,16 +334,29 @@ if (!empty($perms['analytics'])) {
     }
   });
 
-  /* ---------- Print ---------- */
-  document.getElementById('printBtn').onclick = ()=>window.print();
+  /* ===== Sidebar toggle: hard reflow to avoid blank page ===== */
+  const relayout = () => eventBus.dispatch('resize', { source: window });
+  function relayoutHard(){
+    requestAnimationFrame(()=> {
+      const prev = pdfViewer.currentScaleValue || String(pdfViewer.currentScale || 'page-width');
+      pdfViewer.currentScaleValue = 'auto'; // force measure
+      requestAnimationFrame(()=> {
+        pdfViewer.currentScaleValue = prev; // restore
+        relayout();
+        // nudge scroll (fixes rare black canvas top)
+        const t = container.scrollTop; container.scrollTop = t + 1; container.scrollTop = t;
+      });
+    });
+  }
 
-  /* ---------- Sidebar toggle ---------- */
-  const sidebar = document.getElementById('sidebar');
-  let open = true;
   document.getElementById('toggleSidebar').onclick = ()=>{
-    open = !open; sidebar.style.display = open ? '' : 'none';
-    setTimeout(()=>{ pdfViewer.currentScaleValue = pdfViewer.currentScaleValue; }, 50);
+    sheet.classList.toggle('hide-side');
+    relayoutHard();
   };
+
+  // Keep stable on any future container size change
+  new ResizeObserver(()=> relayout()).observe(container);
+  window.addEventListener('resize', relayout);
 })();
 </script>
 </body>
