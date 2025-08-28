@@ -126,6 +126,38 @@ include 'includes/topbar.php';
   <div id="alert" class="mt-3"></div>
 </div>
 
+<!-- Permissions Modal -->
+<div class="modal fade" id="permModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Link Permissions</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="permDownload" checked>
+          <label class="form-check-label" for="permDownload">Allow Download</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="permSearch" checked>
+          <label class="form-check-label" for="permSearch">Allow Search</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="permAnalytics" checked>
+          <label class="form-check-label" for="permAnalytics">Enable Analytics</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="createLink">Create Link</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 (function($){
@@ -134,6 +166,8 @@ include 'includes/topbar.php';
   const $empty   = $('#emptyState');
   const $bulkBtn = $('#bulkDelete');
   const $checkAll= $('#checkAll');
+  let genBtn = null;
+  let linkHolder = null;
 
   function humanSize(bytes){
     if (bytes === 0 || bytes == null) return '—';
@@ -225,25 +259,35 @@ include 'includes/topbar.php';
      .fail(()=> showAlert('Delete failed.', 'danger'));
   });
 
-  // Generate (optional endpoint)
+  // Open permissions modal
   $tbody.on('click', '.generate', function(){
-    const btn = $(this);
-    const cell = btn.closest('td');
-    const holder = cell.find('.link-holder');
-    const id = btn.data('id');
-    btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm mr-1"></span>Generating');
-    $.post('api/generate_link.php', { id }, function(res){
+    genBtn = $(this);
+    linkHolder = genBtn.closest('td').find('.link-holder');
+    $('#permModal').data('id', genBtn.data('id')).modal('show');
+  });
+
+  // Create link with permissions
+  $('#createLink').on('click', function(){
+    const id = $('#permModal').data('id');
+    const perms = {
+      download: $('#permDownload').prop('checked'),
+      search: $('#permSearch').prop('checked'),
+      analytics: $('#permAnalytics').prop('checked')
+    };
+    $('#permModal').modal('hide');
+    genBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm mr-1"></span>Generating');
+    $.post('api/generate_link.php', { id, permissions: JSON.stringify(perms) }, function(res){
       const url = (res && res.url) ? res.url : '';
       if(url){
-        holder.html('<code>'+url+'</code>');
-        cell.find('.copy').prop('disabled', false).data('url', url);
+        linkHolder.html('<code>'+url+'</code>');
+        genBtn.closest('td').find('.copy').prop('disabled', false).data('url', url);
       }else{
-        holder.html('<span class="text-danger">No URL returned</span>');
+        linkHolder.html('<span class="text-danger">No URL returned</span>');
       }
     }, 'json').fail(function(){
-      holder.html('<span class="text-danger">Failed to generate link</span>');
+      linkHolder.html('<span class="text-danger">Failed to generate link</span>');
     }).always(function(){
-      btn.prop('disabled', false).html('<i class="bi bi-link-45deg"></i> Generate');
+      genBtn.prop('disabled', false).html('<i class="bi bi-link-45deg"></i> Generate');
     });
   });
 

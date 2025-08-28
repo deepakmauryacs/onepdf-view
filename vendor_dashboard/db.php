@@ -34,4 +34,23 @@ $mysqli->query("CREATE TABLE IF NOT EXISTS documents (
     size BIGINT NOT NULL,
     uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )");
+
+// Table for generated links
+$mysqli->query("CREATE TABLE IF NOT EXISTS links (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    document_id INT NOT NULL,
+    slug VARCHAR(20) NOT NULL UNIQUE,
+    permissions JSON NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (document_id) REFERENCES documents(id) ON DELETE CASCADE
+)");
+
+// Analytics for link views
+$mysqli->query("CREATE TABLE IF NOT EXISTS link_analytics (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    link_id INT NOT NULL,
+    event VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (link_id) REFERENCES links(id) ON DELETE CASCADE
+)");
 ?>
