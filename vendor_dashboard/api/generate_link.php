@@ -2,8 +2,10 @@
 require_once __DIR__ . '/../../config.php';
 
 $id = $_POST['id'] ?? null;
-$permJson = $_POST['permissions'] ?? null;
-if (!$id || !$permJson) {
+// Allow optional permissions.  If none are provided default to an empty JSON
+// object so links can still be generated and later viewed.
+$permJson = $_POST['permissions'] ?? '{}';
+if (!$id) {
     http_response_code(400);
     echo json_encode(['error' => 'Missing parameters']);
     exit;
@@ -11,9 +13,8 @@ if (!$id || !$permJson) {
 
 $perms = json_decode($permJson, true);
 if ($perms === null) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Invalid permissions']);
-    exit;
+    // Malformed JSON – fall back to no permissions instead of failing.
+    $permJson = '{}';
 }
 
 // Generate unique slug
