@@ -25,4 +25,13 @@ $mysqli->query("CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL,
     agreed_terms TINYINT(1) NOT NULL DEFAULT 0
 )");
+
+// Table for uploaded documents
+$mysqli->query("CREATE TABLE IF NOT EXISTS documents (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    filename VARCHAR(255) NOT NULL,
+    filepath VARCHAR(255) NOT NULL,
+    size BIGINT NOT NULL,
+    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)");
 ?>

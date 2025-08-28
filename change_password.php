@@ -5,7 +5,7 @@ require_once __DIR__ . '/config.php';
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard</title>
+    <title>Change Password</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.6.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.6.2/js/bootstrap.min.js"></script>
@@ -34,8 +34,8 @@ require_once __DIR__ . '/config.php';
         </ul>
     </nav>
     <div class="container-fluid p-4">
-        <h1>Dashboard</h1>
-        <p>Welcome to the dashboard.</p>
+        <h1>Change Password</h1>
+        <p>This is a placeholder change password page.</p>
     </div>
 </div>
 </body>
