@@ -1,8 +1,8 @@
 <?php
-$host = 'localhost';
-$db   = 'your_database';
-$user = 'username';
-$pass = 'password';
+$host = '127.0.0.1';
+$db   = 'onepdf';
+$user = 'root';
+$pass = '';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
