@@ -23,6 +23,9 @@ if (!$stmt->fetch()) {
 }
 $stmt->close();
 
+$basePath = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? ''), '/');
+$pdfUrl   = $basePath . '/' . ltrim($filepath, '/');
+
 $perms = json_decode($permJson, true) ?? [];
 if (!empty($perms['analytics'])) {
     $ins = $mysqli->prepare("INSERT INTO link_analytics (link_id, event) VALUES (?, 'view')");
@@ -51,10 +54,10 @@ $allowSearch   = !empty($perms['search']);
   <input type="text" id="searchBox" placeholder="Search...">
 <?php } ?>
 <?php if($allowDownload){ ?>
-  <a href="<?php echo htmlspecialchars($filepath); ?>" download>Download</a>
+  <a href="<?php echo htmlspecialchars($pdfUrl); ?>" download>Download</a>
 <?php } ?>
 </div>
-<iframe id="viewer" src="<?php echo htmlspecialchars($filepath); ?>#toolbar=0"></iframe>
+<iframe id="viewer" src="<?php echo htmlspecialchars($pdfUrl); ?>#toolbar=0"></iframe>
 <script>
 const searchBox=document.getElementById('searchBox');
 if(searchBox){
