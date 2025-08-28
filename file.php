@@ -44,7 +44,7 @@ if (!empty($perms['analytics'])) {
   }
   *{box-sizing:border-box}
   html,body{height:100%}
-  body{ margin:0; height:100vh; overflow:hidden; background:var(--ui-bg); color:var(--ui-ink); font-family:"DM Sans",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif; }
+  body{ margin:0; height:100vh; height:100dvh; overflow:hidden; background:var(--ui-bg); color:var(--ui-ink); font-family:"DM Sans",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif; }
 
   .topbar{ height:48px; background:var(--ui-bar); display:flex; align-items:center; gap:10px; padding:0 16px; border-bottom:1px solid var(--ui-border); }
   .tb{ height:32px; min-width:32px; border:0; color:var(--ui-ink); background:transparent; border-radius:4px; display:inline-flex; align-items:center; justify-content:center; padding:0 8px; cursor:pointer }
@@ -59,7 +59,7 @@ if (!empty($perms['analytics'])) {
   .zoom-menu .item:hover{ background:color-mix(in srgb, var(--ui-bar) 50%, black 10%) }
 
   /* GRID: second column must be minmax(0,1fr) */
-  .sheet{ display:grid; grid-template-columns: var(--side-w) minmax(0,1fr); height: calc(100vh - 48px); }
+  .sheet{ display:grid; grid-template-columns: var(--side-w) minmax(0,1fr); height: calc(100vh - 48px); height: calc(100dvh - 48px); }
   .sheet.hide-side{ grid-template-columns: 0 minmax(0,1fr); }
 
   .sidebar{ border-right:1px solid var(--ui-border); background:color-mix(in srgb, var(--ui-bg) 80%, black 10%); display:flex; flex-direction:column; min-width:0; overflow:hidden; }
@@ -92,6 +92,12 @@ if (!empty($perms['analytics'])) {
 
   .page-info{ display:flex; align-items:center; gap:6px; color:var(--ui-ink) }
   .page-info input{ width:40px; height:26px; border:1px solid var(--ui-border); background:var(--ui-bar-darker); color:var(--ui-ink); text-align:center; border-radius:4px }
+
+  @media (max-width: 600px){
+    .topbar{ padding:0 8px; gap:6px; }
+    .tb{ height:28px; min-width:28px; }
+    .page-info input{ width:32px; height:24px; }
+  }
 </style>
 </head>
 <body>
