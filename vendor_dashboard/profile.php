@@ -4,7 +4,6 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: ../login.php');
     exit;
 }
-
 $user_id = $_SESSION['user_id'];
 $stmt = $mysqli->prepare('SELECT first_name, last_name, company, country, email FROM users WHERE id = ?');
 $stmt->bind_param('i', $user_id);
