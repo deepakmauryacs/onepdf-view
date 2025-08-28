@@ -237,6 +237,7 @@ $allowSearch   = !empty($perms['search']);
     pdfDoc = doc;
     pdfViewer.setDocument(doc);
     linkService.setDocument(doc);
+    findController.setDocument(doc);
     document.getElementById('pageCount').textContent = doc.numPages;
     document.getElementById('statusText').textContent = "Ready";
     pdfViewer.currentScaleValue = 'page-width';
