@@ -349,9 +349,15 @@ if (!empty($perms['analytics'])) {
     });
   }
 
+  /* ---------- Sidebar toggle ---------- */
+  const sidebar = document.getElementById('sidebar');
+  const sheet = document.getElementById('sheet');
+  let open = true;
   document.getElementById('toggleSidebar').onclick = ()=>{
-    sheet.classList.toggle('hide-side');
-    relayoutHard();
+    open = !open;
+    sidebar.style.display = open ? '' : 'none';
+    sheet.style.gridTemplateColumns = open ? '260px 1fr' : '1fr';
+    setTimeout(()=>{ pdfViewer.currentScaleValue = pdfViewer.currentScaleValue; }, 50);
   };
 
   // Keep stable on any future container size change
