@@ -351,7 +351,6 @@ if (!empty($perms['analytics'])) {
 
   /* ---------- Sidebar toggle ---------- */
   const sidebar = document.getElementById('sidebar');
-  const sheet = document.getElementById('sheet');
   let open = true;
   document.getElementById('toggleSidebar').onclick = ()=>{
     open = !open;
