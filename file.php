@@ -138,9 +138,11 @@ if (!empty($perms['analytics'])) {
 
   <div class="spacer"></div>
 
+<?php if (!empty($perms['download'])): ?>
   <a class="tb" id="downloadBtn" title="Download" href="<?php echo htmlspecialchars($pdfUrl); ?>" download>
     <i class="bi bi-download"></i>
   </a>
+<?php endif; ?>
 </div>
 
 <div class="sheet" id="sheet">
