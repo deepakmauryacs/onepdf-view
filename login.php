@@ -143,7 +143,7 @@
      
       if (result.success) {
         toastr.success('Login successful. Redirecting to dashboard...', 'Success');
-        setTimeout(() => window.location = 'vendor_dashboard/dashboard.php', 1500);
+        setTimeout(() => window.location = 'vendor_dashboard/dashboard', 1500);
       } else {
         toastr.error(result.error || 'Login failed.', 'Error');
       }
