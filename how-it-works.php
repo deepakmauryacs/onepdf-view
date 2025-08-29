@@ -59,5 +59,83 @@ include 'include/header.php';
     </div>
 </section>
 
+<section class="detail-section">
+    <div class="container">
+        <h2 class="section-title centered">Detailed Workflow Explanation</h2>
+        <p class="section-subtitle">Learn how each step works in practice</p>
+        
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="detail-card">
+                    <h3 class="mb-4">Step 1: Account Creation & Setup</h3>
+                    <p>Getting started with PDFOneLink is designed to be quick and straightforward:</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>Sign up</strong> with your email address or social account</li>
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>Verify your email</strong> to activate your account</li>
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>Complete your profile</strong> with company details and branding</li>
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>Set up security preferences</strong> and default permissions</li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>Invite team members</strong> (on business plans)</li>
+                    </ul>
+                    <div class="mt-4 p-3 bg-light rounded">
+                        <h6 class="d-flex align-items-center"><i class="bi bi-lightbulb me-2 text-warning"></i> Pro Tip</h6>
+                        <p class="small mb-0">Upload your logo and set brand colors during setup to have all your shared PDFs automatically branded.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="detail-card">
+                    <h3 class="mb-4">Step 2: PDF Upload & Processing</h3>
+                    <p>Our system automatically optimizes your documents for secure sharing:</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>Drag and drop</strong> interface for easy uploading</li>
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>Batch processing</strong> for multiple files</li>
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>Automatic OCR</strong> for scanned documents (optional)</li>
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>Thumbnail generation</strong> for easy identification</li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>Secure encryption</strong> during transfer and storage</li>
+                    </ul>
+                    <div class="mt-4 p-3 bg-light rounded">
+                        <h6 class="d-flex align-items-center"><i class="bi bi-info-circle me-2 text-primary"></i> Did You Know?</h6>
+                        <p class="small mb-0">We support PDFs up to 500MB in size, with no daily upload limits on paid plans.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="detail-card">
+                    <h3 class="mb-4">Step 3: Security & Permission Settings</h3>
+                    <p>Granular control over who can access your content and how:</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>Password protection</strong> for added security</li>
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>Download/print restrictions</strong> to protect your IP</li>
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>Expiration dates</strong> for temporary access</li>
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>Domain restrictions</strong> to limit access to certain organizations</li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>Watermarking</strong> with user identifiers</li>
+                    </ul>
+                    <div class="mt-4 p-3 bg-light rounded">
+                        <h6 class="d-flex align-items-center"><i class="bi bi-shield-check me-2 text-success"></i> Security Note</h6>
+                        <p class="small mb-0">All documents are encrypted at rest and in transit using industry-standard AES-256 encryption.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="detail-card">
+                    <h3 class="mb-4">Step 4: Sharing & Analytics</h3>
+                    <p>Share securely and gain valuable insights into viewer engagement:</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>Custom branded links</strong> for professional sharing</li>
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>Email notifications</strong> when documents are viewed</li>
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>Detailed analytics</strong> on viewer engagement</li>
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>Geographic data</strong> on where documents are accessed</li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>Exportable reports</strong> for client presentations</li>
+                    </ul>
+                    <div class="mt-4 p-3 bg-light rounded">
+                        <h6 class="d-flex align-items-center"><i class="bi bi-graph-up me-2 text-info"></i> Analytics Insight</h6>
+                        <p class="small mb-0">Track time spent per page, which sections get the most attention, and when viewers drop off.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <?php include 'include/footer.php'; ?>
 
