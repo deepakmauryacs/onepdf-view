@@ -1,6 +1,15 @@
 <?php
 require_once __DIR__ . '/config.php';
 
+// Prevent direct access by ensuring the request originates from our domain
+$referrer = $_SERVER['HTTP_REFERER'] ?? '';
+$host     = $_SERVER['HTTP_HOST'] ?? '';
+if (!$referrer || parse_url($referrer, PHP_URL_HOST) !== $host) {
+    http_response_code(403);
+    echo 'Access is denied';
+    exit;
+}
+
 $slug = $_GET['code'] ?? '';
 if (!$slug) {
     http_response_code(400);
