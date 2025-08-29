@@ -414,6 +414,30 @@
       margin-bottom: 1rem;
     }
 
+    /* Detailed workflow section */
+    .detail-section {
+      background: var(--lighter);
+      padding: 4rem 0;
+    }
+
+    .detail-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 2rem;
+      height: 100%;
+    }
+
+    .detail-card ul li {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .detail-card ul li i {
+      margin-right: 0.5rem;
+    }
+
     /* NEW: Demo Section Styles */
     .demo-section {
       background: linear-gradient(to bottom, #f8fafc, #ffffff);
