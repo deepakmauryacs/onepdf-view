@@ -10,7 +10,7 @@ include 'include/header.php';
       <div class="row align-items-center g-5">
         <div class="col-lg-6">
           <span class="badge"><i class="bi bi-shield-lock me-1"></i> Secure by default</span>
-          <h1 class="display-5 fw-bold mb-4">Share & track PDFs with <span class="text-primary">one secure link</span></h1>
+          <h1 class="display-5 fw-bold mb-4">Share & track PDFs with <span class="text-brand">one secure link</span></h1>
           <p class="lead text-muted mb-4">
             Upload PDFs, control permissions (view-only, watermark, expiry), and get real-time analytics on opens, location, device, and time-on-page. Embed anywhere with a simple iframe.
           </p>
@@ -238,9 +238,9 @@ include 'include/header.php';
           
           <div class="d-flex flex-column gap-3">
             <div class="d-flex align-items-start">
-              <div class="bg-primary bg-opacity-10 p-2 rounded-circle me-3 mt-1">
-                <i class="bi bi-code-slash text-primary"></i>
-              </div>
+                <div class="demo-feature-icon rounded-circle me-3 mt-1">
+                  <i class="bi bi-code-slash text-brand"></i>
+                </div>
               <div>
                 <h6 class="mb-1">Copy & paste embedding</h6>
                 <p class="text-muted small mb-0">Just copy the iframe code and add it to your HTML</p>
@@ -248,9 +248,9 @@ include 'include/header.php';
             </div>
             
             <div class="d-flex align-items-start">
-              <div class="bg-primary bg-opacity-10 p-2 rounded-circle me-3 mt-1">
-                <i class="bi bi-sliders text-primary"></i>
-              </div>
+                <div class="demo-feature-icon rounded-circle me-3 mt-1">
+                  <i class="bi bi-sliders text-brand"></i>
+                </div>
               <div>
                 <h6 class="mb-1">Customize permissions</h6>
                 <p class="text-muted small mb-0">Control download, print, and access expiration</p>
@@ -258,9 +258,9 @@ include 'include/header.php';
             </div>
             
             <div class="d-flex align-items-start">
-              <div class="bg-primary bg-opacity-10 p-2 rounded-circle me-3 mt-1">
-                <i class="bi bi-bar-chart text-primary"></i>
-              </div>
+                <div class="demo-feature-icon rounded-circle me-3 mt-1">
+                  <i class="bi bi-bar-chart text-brand"></i>
+                </div>
               <div>
                 <h6 class="mb-1">Track engagement</h6>
                 <p class="text-muted small mb-0">See who viewed your PDF and for how long</p>
