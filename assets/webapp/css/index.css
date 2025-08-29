@@ -1,9 +1,9 @@
 
     :root {
-      --brand: #333333;
-      --brand-light: #555555;
-      --brand-dark: #111111;
-      --accent: #777777;
+      --brand: #6366f1;
+      --brand-light: #818cf8;
+      --brand-dark: #4f46e5;
+      --accent: #4f46e5;
       --text: #f3f4f6; /* light gray for dark backgrounds */
       --text-light: #d1d5db;
       --muted: #9ca3af;
