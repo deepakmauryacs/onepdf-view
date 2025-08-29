@@ -6,19 +6,36 @@
     --footer-link: #9ca3af;
 }
 
-.navbar-custom {
-    background: linear-gradient(90deg, var(--brand-start), var(--brand-end));
+/* Top bar */
+.topbar {
+    background-color: #1f2937;
 }
 
-.navbar-custom .navbar-brand,
-.navbar-custom .nav-link,
-.navbar-custom .navbar-toggler {
+.topbar .top-links a {
     color: #fff;
+    opacity: .8;
 }
 
-.navbar-custom .nav-link:hover,
-.navbar-custom .navbar-brand:hover {
-    color: #e0e7ff;
+.topbar .top-links a:hover {
+    opacity: 1;
+}
+
+/* Main navigation */
+.navbar-main {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.navbar-main .nav-link {
+    color: #374151;
+    font-weight: 500;
+}
+
+.navbar-main .nav-link:hover {
+    color: #111827;
+}
+
+.navbar-main .btn {
+    border-radius: 50px;
 }
 
 .footer {
