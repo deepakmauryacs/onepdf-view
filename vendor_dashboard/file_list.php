@@ -221,6 +221,9 @@ include 'includes/topbar.php';
             <button class="btn btn-outline-secondary btn-sm btn-icon copy" data-url="${url}" ${url ? '' : 'disabled'}>
               <i class="bi bi-clipboard"></i> Copy
             </button>
+            <button class="btn btn-outline-info btn-sm btn-icon embed" data-url="${url}" ${url ? '' : 'disabled'}>
+              <i class="bi bi-code-slash"></i> Embed
+            </button>
             <button class="btn btn-outline-danger btn-sm delete" data-id="${f.id}">
               <i class="bi bi-trash"></i>
             </button>
@@ -298,6 +301,13 @@ include 'includes/topbar.php';
     const ta = document.createElement('textarea');
     ta.value = url; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
     showAlert('Link copied to clipboard.', 'success');
+  });
+
+  // Embed
+  $tbody.on('click', '.embed', function(){
+    const url = $(this).data('url') || '';
+    if(!url) return;
+    window.open('embed.php?url=' + encodeURIComponent(url), '_blank');
   });
 
   // Bulk select
