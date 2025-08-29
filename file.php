@@ -95,6 +95,14 @@ if (!empty($perms['analytics'])) {
   .page-info{ display:flex; align-items:center; gap:6px; color:var(--ui-ink) }
   .page-info input{ width:40px; height:26px; border:1px solid var(--ui-border); background:var(--ui-bar-darker); color:var(--ui-ink); text-align:center; border-radius:4px }
 
+  /* Prevent text selection inside the PDF viewer */
+  #viewerContainer, #viewer, .pdfViewer .textLayer{
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+  }
+
   @media (max-width: 600px){
     .topbar{ padding:0 8px; gap:6px; }
     .tb{ height:28px; min-width:28px; }
@@ -378,6 +386,17 @@ if (!empty($perms['analytics'])) {
   // Keep stable on any future container size change
   new ResizeObserver(()=> relayout()).observe(container);
   window.addEventListener('resize', relayout);
+
+  // Disable common copy/selection shortcuts and context menu
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey || e.metaKey) {
+      const key = e.key.toLowerCase();
+      if (key === 'a' || key === 'c') {
+        e.preventDefault();
+      }
+    }
+  });
+  document.addEventListener('contextmenu', (e) => e.preventDefault());
 })();
 </script>
 </body>
