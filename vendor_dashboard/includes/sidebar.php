@@ -7,21 +7,21 @@ $menu = [
         'title' => 'File',
         'icon'  => 'bi-folder',
         'children' => [
-            ['title' => 'Upload File', 'url' => 'upload.php'],
-            ['title' => 'File List',  'url' => 'file_list.php'],
+            ['title' => 'Upload File', 'url' => 'upload'],
+            ['title' => 'File List',  'url' => 'file_list'],
         ]
     ],
-    ['title' => 'Analytics', 'icon' => 'bi-graph-up', 'url' => 'analytics.php'],
+    ['title' => 'Analytics', 'icon' => 'bi-graph-up', 'url' => 'analytics'],
     [
         'title' => 'Setting',
         'icon'  => 'bi-gear',
         'children' => [
-            ['title' => 'Profile Update', 'url' => 'profile.php'],
-            ['title' => 'Change Password', 'url' => 'change_password.php'],
+            ['title' => 'Profile Update', 'url' => 'profile'],
+            ['title' => 'Change Password', 'url' => 'change_password'],
         ]
     ],
     ['divider' => true],
-    ['title' => 'Logout', 'icon' => 'bi-box-arrow-right', 'url' => '../logout.php'],
+    ['title' => 'Logout', 'icon' => 'bi-box-arrow-right', 'url' => '../logout'],
 ];
 ?>
 <!-- Sidebar -->
