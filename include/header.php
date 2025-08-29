@@ -20,8 +20,8 @@
 <nav class="topbar py-2 text-white">
     <div class="container d-flex justify-content-between align-items-center">
         <div class="small">
-            <i class="bi bi-envelope me-2"></i>support@invena.com
-            <span class="ms-3"><i class="bi bi-clock me-2"></i>Working: 08:00am - 5:00pm</span>
+            <i class="bi bi-envelope me-2"></i>support@pdfonelink.com
+            <span class="ms-3"><i class="bi bi-clock me-2"></i>Mon - Fri: 9AM - 6PM PST</span>
         </div>
         <ul class="list-inline mb-0 small top-links">
             <li class="list-inline-item"><a href="#" class="text-white text-decoration-none">Company news</a></li>
@@ -50,18 +50,14 @@
         </button>
         <div id="nav" class="collapse navbar-collapse">
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Service</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Project</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Blog</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+                <li class="nav-item"><a class="nav-link" href="features.php">Features</a></li>
+                <li class="nav-item"><a class="nav-link" href="how-it-works.php">How It Works</a></li>
+                <li class="nav-item"><a class="nav-link" href="pricing.php">Pricing</a></li>
+                <li class="nav-item"><a class="nav-link" href="contact.php">Contact</a></li>
             </ul>
             <div class="d-flex align-items-center">
-                <a href="#" class="btn btn-dark me-3">Get Quote</a>
-                <button class="btn btn-outline-secondary rounded-circle border-0 fs-4" type="button">
-                    <i class="bi bi-list"></i>
-                </button>
+                <a href="login.php" class="btn btn-outline-secondary me-3">Login</a>
+                <a href="registration.php" class="btn btn-dark">Start Free Trial</a>
             </div>
         </div>
     </div>
