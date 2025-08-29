@@ -8,15 +8,17 @@ if (!$slug) {
 }
 if (!$slug) { echo 'Missing link code'; exit; }
 
-$stmt = $mysqli->prepare("SELECT l.id, l.permissions, d.filepath FROM links l JOIN documents d ON l.document_id=d.id WHERE l.slug=?");
+// Fetch link information and permissions
+$stmt = $mysqli->prepare("SELECT l.id, l.permissions FROM links l WHERE l.slug=?");
 $stmt->bind_param('s', $slug);
 $stmt->execute();
-$stmt->bind_result($linkId, $permJson, $filepath);
+$stmt->bind_result($linkId, $permJson);
 if (!$stmt->fetch()) { echo 'Invalid link'; exit; }
 $stmt->close();
 
-$basePath = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? ''), '/');
-$pdfUrl   = $basePath . '/' . ltrim($filepath, '/');
+$basePath   = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? ''), '/');
+$pdfUrl     = $basePath . '/get_pdf.php?code=' . urlencode($slug);
+$downloadUrl = $pdfUrl . '&download=1';
 
 $perms = json_decode($permJson, true) ?? [];
 if (!empty($perms['analytics'])) {
@@ -138,11 +140,11 @@ if (!empty($perms['analytics'])) {
 
   <div class="spacer"></div>
 
-<?php if (!empty($perms['download'])): ?>
-  <a class="tb" id="downloadBtn" title="Download" href="<?php echo htmlspecialchars($pdfUrl); ?>" download>
-    <i class="bi bi-download"></i>
-  </a>
-<?php endif; ?>
+  <?php if (!empty($perms['download'])): ?>
+    <a class="tb" id="downloadBtn" title="Download" href="<?php echo htmlspecialchars($downloadUrl); ?>" download>
+      <i class="bi bi-download"></i>
+    </a>
+  <?php endif; ?>
 </div>
 
 <div class="sheet" id="sheet">
