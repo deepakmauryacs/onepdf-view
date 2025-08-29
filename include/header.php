@@ -41,8 +41,7 @@
         <a class="navbar-brand d-flex align-items-center" href="index.php">
             <i class="bi bi-graph-up-arrow fs-2 me-2 text-dark"></i>
             <div class="d-flex flex-column lh-1">
-                <span class="fw-bold fs-4">Invena</span>
-                <small class="text-muted">Business Solution</small>
+                <span class="fw-bold fs-4">PDFOneLink</span>
             </div>
         </a>
         <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
