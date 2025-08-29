@@ -1,7 +1,7 @@
 <?php
 $current = basename($_SERVER['PHP_SELF']);
 $menu = [
-    ['title' => 'Dashboard', 'icon' => 'bi-speedometer2', 'url' => 'dashboard.php'],
+    ['title' => 'Dashboard', 'icon' => 'bi-speedometer2', 'url' => 'dashboard'],
     ['divider' => true],
     [
         'title' => 'File',
