@@ -53,4 +53,10 @@ $mysqli->query("CREATE TABLE IF NOT EXISTS link_analytics (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (link_id) REFERENCES links(id) ON DELETE CASCADE
 )");
+
+// Ensure created_at exists for installations created before this column
+$colRes = $mysqli->query("SHOW COLUMNS FROM link_analytics LIKE 'created_at'");
+if ($colRes && $colRes->num_rows === 0) {
+    $mysqli->query("ALTER TABLE link_analytics ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
+}
 ?>
