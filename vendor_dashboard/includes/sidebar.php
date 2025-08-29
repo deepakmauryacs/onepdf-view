@@ -11,6 +11,7 @@ $menu = [
             ['title' => 'File List',  'url' => 'file_list.php'],
         ]
     ],
+    ['title' => 'Analytics', 'icon' => 'bi-graph-up', 'url' => 'analytics.php'],
     [
         'title' => 'Setting',
         'icon'  => 'bi-gear',
