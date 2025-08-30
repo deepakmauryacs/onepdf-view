@@ -71,12 +71,7 @@
 <!-- Custom scripts for all pages-->
 <script src="<?php echo $assets_path; ?>js/sb-admin-2.min.js"></script>
 
-<!-- Page level plugins -->
-<script src="<?php echo $assets_path; ?>vendor/chart.js/Chart.min.js"></script>
 
-<!-- Page level custom scripts -->
-<script src="<?php echo $assets_path; ?>js/demo/chart-area-demo.js"></script>
-<script src="<?php echo $assets_path; ?>js/demo/chart-pie-demo.js"></script>
 
 </body>
 </html>
