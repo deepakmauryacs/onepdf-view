@@ -16,48 +16,23 @@
     <?php endif; ?>
 </head>
 <body>
-<!-- Top bar -->
-<nav class="topbar py-2 text-white">
-    <div class="container d-flex justify-content-between align-items-center">
-        <div class="small">
-            <i class="bi bi-envelope me-2"></i>support@pdfonelink.com
-            <span class="ms-3"><i class="bi bi-clock me-2"></i>Mon - Fri: 9AM - 6PM PST</span>
-        </div>
-        <ul class="list-inline mb-0 small top-links">
-            <li class="list-inline-item"><a href="#" class="text-white text-decoration-none">Company news</a></li>
-            <li class="list-inline-item"><a href="#" class="text-white text-decoration-none">Faq</a></li>
-            <li class="list-inline-item"><a href="#" class="text-white text-decoration-none">Contact</a></li>
-            <li class="list-inline-item ms-2"><a href="#" class="text-white"><i class="bi bi-facebook"></i></a></li>
-            <li class="list-inline-item"><a href="#" class="text-white"><i class="bi bi-twitter"></i></a></li>
-            <li class="list-inline-item"><a href="#" class="text-white"><i class="bi bi-instagram"></i></a></li>
-            <li class="list-inline-item"><a href="#" class="text-white"><i class="bi bi-linkedin"></i></a></li>
-        </ul>
+
+<nav class="navbar navbar-expand-lg sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="/"><i class="bi bi-file-earmark-pdf"></i>PDFOneLink</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div id="nav" class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+        <li class="nav-item"><a class="nav-link" href="/#features">Features</a></li>
+        <li class="nav-item"><a class="nav-link" href="/#how">How it works</a></li>
+        <li class="nav-item"><a class="nav-link" href="/#pricing">Pricing</a></li>
+        <li class="nav-item"><a class="nav-link" href="/#faq">FAQ</a></li>
+        <li class="nav-item ms-lg-3"><a class="btn btn-ghost btn-sm" href="login.php">Log in</a></li>
+        <li class="nav-item ms-2"><a class="btn btn-brand btn-sm" href="registration.php">Start free</a></li>
+      </ul>
     </div>
+  </div>
 </nav>
 
-<!-- Main navigation -->
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm navbar-main">
-    <div class="container">
-        <a class="navbar-brand d-flex align-items-center" href="index.php">
-            <i class="bi bi-graph-up-arrow fs-2 me-2 text-dark"></i>
-            <div class="d-flex flex-column lh-1">
-                <span class="fw-bold fs-4">PDFOneLink</span>
-            </div>
-        </a>
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div id="nav" class="collapse navbar-collapse">
-            <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link" href="features.php">Features</a></li>
-                <li class="nav-item"><a class="nav-link" href="how-it-works.php">How It Works</a></li>
-                <li class="nav-item"><a class="nav-link" href="pricing.php">Pricing</a></li>
-                <li class="nav-item"><a class="nav-link" href="contact.php">Contact</a></li>
-            </ul>
-            <div class="d-flex align-items-center">
-                <a href="login.php" class="btn btn-outline-secondary me-3">Login</a>
-                <a href="registration.php" class="btn btn-dark">Start Free Trial</a>
-            </div>
-        </div>
-    </div>
-</nav>
