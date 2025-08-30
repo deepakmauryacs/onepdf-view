@@ -43,9 +43,9 @@
       <div class="footer-bottom">
         <p class="copyright">© <span id="y"></span> PDFOneLink. All rights reserved.</p>
         <div class="legal-links">
-          <a href="/privacy">Privacy Policy</a>
+          <a href="/privacy.php">Privacy Policy</a>
           <span class="divider">•</span>
-          <a href="/terms">Terms of Service</a>
+          <a href="/terms.php">Terms of Service</a>
           <span class="divider">•</span>
           <a href="/cookies">Cookie Policy</a>
         </div>
