@@ -67,18 +67,21 @@ include 'include/header.php';
                                     <div class="mb-3">
                                         <label for="firstName" class="form-label">First Name</label>
                                         <input type="text" class="form-control" id="firstName" name="firstName" required>
+                                        <div id="firstName_error" class="error-message"></div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="lastName" class="form-label">Last Name</label>
                                         <input type="text" class="form-control" id="lastName" name="lastName" required>
+                                        <div id="lastName_error" class="error-message"></div>
                                     </div>
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email Address</label>
                                 <input type="email" class="form-control" id="email" name="email" required>
+                                <div id="email_error" class="error-message"></div>
                             </div>
                             <div class="mb-3">
                                 <label for="company" class="form-label">Company (Optional)</label>
@@ -94,10 +97,12 @@ include 'include/header.php';
                                     <option value="partnership">Partnership Opportunity</option>
                                     <option value="other">Other</option>
                                 </select>
+                                <div id="subject_error" class="error-message"></div>
                             </div>
                             <div class="mb-4">
                                 <label for="message" class="form-label">Message</label>
                                 <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                                <div id="message_error" class="error-message"></div>
                             </div>
                             <button type="submit" class="btn btn-brand btn-lg w-100">Send Message</button>
                         </form>
