@@ -1,175 +1,379 @@
 <?php
-require_once '../config.php';
+require_once __DIR__ . '/../config.php';
 if (!isset($_SESSION['user_id'])) {
     header('Location: ../login');
     exit;
 }
-define('INCLUDE_PATH', __DIR__ . '/includes/');
-
-// (Optional) stats
-$totalFiles = $totalLinks = $totalViews = $totalUsers = 0;
-if (isset($mysqli)) {
-    if ($res = $mysqli->query("SELECT COUNT(*) AS cnt FROM documents")) { $totalFiles = (int)$res->fetch_assoc()['cnt']; }
-    if ($res = $mysqli->query("SELECT COUNT(*) AS cnt FROM links")) { $totalLinks = (int)$res->fetch_assoc()['cnt']; }
-    if ($res = $mysqli->query("SELECT COUNT(*) AS cnt FROM link_analytics")) { $totalViews = (int)$res->fetch_assoc()['cnt']; }
-    if ($res = $mysqli->query("SELECT COUNT(*) AS cnt FROM users")) { $totalUsers = (int)$res->fetch_assoc()['cnt']; }
-}
-
-include(INCLUDE_PATH . 'header.php');
-include(INCLUDE_PATH . 'sidebar.php');
-include(INCLUDE_PATH . 'topbar.php');
+include 'includes/header.php';
+include 'includes/sidebar.php';
+include 'includes/topbar.php';
 ?>
-
 <style>
-/* ===== Modern Document Grid UI ===== */
-.header-row {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:12px 0; margin-bottom:16px; border-bottom:1px solid #e5e7eb;
-}
-.header-row .title { font-size:1.25rem; font-weight:600; color:#111827; }
-.header-row .actions { display:flex; align-items:center; gap:16px; }
+  /* ---------- Card & table polish ---------- */
+  .files-card{ border:1px solid #e5e7eb; border-radius:12px; }
+  .table thead th{ border-bottom:1px solid #e5e7eb; font-weight:700; color:#374151; }
+  .table tbody td{ vertical-align:middle; }
+  .file-name{ max-width:520px; }
+  .file-icon{ width:36px; height:36px; display:grid; place-items:center; border-radius:10px; background:#eef2ff; color:#4338ca; }
 
-.btn-new {
-  display:inline-flex; align-items:center; gap:6px;
-  background:#22c55e; color:#fff; border:none; border-radius:8px;
-  padding:8px 16px; font-weight:600; font-size:.95rem;
-  box-shadow:0 2px 6px rgba(34,197,94,.3);
-}
-.btn-new:hover{ background:#16a34a; color:#fff; text-decoration:none; }
+  /* ---------- Header tools layout ---------- */
+  .mf-header{ display:flex; align-items:center; gap:12px; justify-content:flex-start; }
+  .mf-left{ flex:0 0 auto; }
+  .mf-actions{ flex:1 1 auto; display:flex; align-items:center; gap:12px; flex-wrap:nowrap; margin-left:auto; }
+  .mf-search.input-group{ flex:1 1 auto; min-width:260px; max-width:none; }
+  .mf-search.input-group > .input-group-prepend .input-group-text{
+    background:#fff; height:40px; padding:.45rem .70rem;
+    border-top-left-radius:10px !important; border-bottom-left-radius:10px !important;
+    border-right:0 !important; display:flex; align-items:center;
+  }
+  .mf-search.input-group > .form-control{
+    height:40px; padding:.45rem .75rem;
+    border-top-right-radius:10px !important; border-bottom-right-radius:10px !important;
+    border-left:0 !important; box-shadow:none !important;
+  }
+  .mf-actions .btn{
+    height:40px; padding:0 .9rem; border-radius:10px;
+    display:inline-flex; align-items:center; gap:.35rem; line-height:1;
+  }
+  .badge-secure{ background:#16a34a; color:#fff; border-radius:999px; padding:.2rem .5rem; font-weight:600; }
+  .btn-icon{ display:inline-flex; align-items:center; gap:.35rem; }
+  .empty{ padding:32px; text-align:center; color:#6b7280; border-top:1px dashed #e5e7eb; border-bottom-left-radius:12px; border-bottom-right-radius:12px; }
+  .card-header{ padding:.85rem 1.1rem; }
+  @media (max-width: 768px){
+    .mf-header{ flex-wrap:wrap; }
+    .mf-actions{ width:100%; margin-left:0; }
+    .mf-search.input-group{ min-width:0; }
+  }
 
-.doc-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
-  gap:24px;
-}
-.doc-card {
-  background:#fff; border-radius:10px; overflow:hidden;
-  box-shadow:0 2px 6px rgba(0,0,0,.08);
-  transition:.2s ease;
-  text-decoration:none;
-}
-.doc-card:hover { box-shadow:0 6px 20px rgba(0,0,0,.12); }
-
-.doc-preview {
-  background:#f3f4f6; display:flex; align-items:center; justify-content:center;
-  padding:12px; height:280px;
-}
-.doc-preview canvas{
-  max-height:100%; max-width:100%;
-  border:1px solid #e5e7eb; border-radius:4px; background:#fff;
-}
-
-.doc-filename {
-  padding:10px; text-align:center; font-size:.9rem;
-  font-weight:500; color:#1f2937; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-}
+  /* ---- Modern Permissions Modal ---- */
+  .perm-modal .modal-content{ border:0; border-radius:16px; box-shadow:0 20px 60px rgba(2,6,23,.18); }
+  .perm-modal .modal-header{ border:0; padding:20px 24px 0; }
+  .perm-modal .modal-body{ padding:8px 24px 24px; }
+  .perm-modal .modal-footer{ border:0; padding:0 24px 24px; }
+  .perm-hero{
+    display:flex; align-items:center; justify-content:center; gap:12px;
+    flex-direction:column; margin:6px 0 18px;
+  }
+  .perm-hero .shield{ width:60px; height:60px; border-radius:16px; background:#eef2ff; display:grid; place-items:center; }
+  .perm-hero .shield i{ font-size:28px; color:#3b82f6; }
+  .toggle-list{ display:grid; gap:16px; margin-top:6px; }
+  .toggle-row{ display:flex; align-items-center; gap:12px; }
+  .toggle-text .title{ font-weight:600; color:#1f2937; }
+  .toggle-text .sub{ font-size:.875rem; color:#6b7280; margin-top:2px; }
+  .toggle-row .label-inline{ margin-left:8px; font-weight:600; color:#1f2937; }
 </style>
 
 <div class="container-fluid">
+  <div class="d-sm-flex align-items-center justify-content-between mb-3">
+    <h1 class="h3 mb-0 text-gray-800">Last 7 Days Documents</h1>
+  </div>
 
-  <!-- Header row -->
-  <div class="header-row">
-    <div class="title">Home</div>
-    <div class="actions">
-      <div class="sort text-sm text-gray-500">Uploaded date <i class="fas fa-sort-down ml-1"></i></div>
-      <a href="upload.php" class="btn-new"><i class="fas fa-plus"></i> New</a>
+  <div class="card shadow-sm files-card">
+    <div class="card-header">
+      <div class="mf-header">
+        <div class="mf-left">
+          <i class="bi bi-folder2-open mr-2"></i>
+          <span class="font-weight-bold">Files</span>
+          <span class="badge badge-primary ml-1" id="countBadge">0</span>
+        </div>
+        <div class="mf-actions">
+          <div class="input-group mf-search">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="bi bi-search"></i></span>
+            </div>
+            <input id="searchInput" type="text" class="form-control" placeholder="Search files..." autocomplete="off">
+          </div>
+          <button id="bulkDelete" class="btn btn-outline-danger" disabled>
+            <i class="bi bi-trash"></i> Delete selected
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="table mb-0" id="filesTable">
+        <thead>
+          <tr>
+            <th style="width:36px;"><input type="checkbox" id="checkAll"></th>
+            <th class="file-name">File Name</th>
+            <th style="width:120px;">Size</th>
+            <th style="width:160px;">Modified</th>
+            <th style="width:110px;">Status</th>
+            <th style="width:260px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div id="emptyState" class="empty d-none">
+        <div class="mb-2"><i class="bi bi-inbox"></i></div>
+        No documents uploaded in the last 7 days.
+      </div>
     </div>
   </div>
 
-  <!-- Documents Grid -->
-  <h2 class="h5 mb-3">Documents</h2>
-  <div class="doc-grid">
-    <?php
-    $docs = [];
-    if (isset($mysqli)) {
-        // Try to get filepath if your table has it; fallback to filename only
-        $stmt = $mysqli->prepare("SELECT id, filename, IFNULL(filepath,'') AS filepath FROM documents WHERE user_id = ? ORDER BY uploaded_at DESC");
-        $stmt->bind_param('i', $_SESSION['user_id']);
-        $stmt->execute();
-        $res = $stmt->get_result();
-        $docs = $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
-        $stmt->close();
-    }
-
-    // Build a base URL (handles subdirectory deployments)
-    $scheme   = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
-    $host     = $_SERVER['HTTP_HOST'] ?? 'localhost';
-    $basePath = rtrim(dirname(dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
-    $baseUrl  = $scheme . $host . ($basePath ? $basePath . '/' : '/');
-
-    if ($docs):
-      foreach ($docs as $doc):
-        // Build the URL to the stored PDF
-        $pdfUrl = '';
-        if (!empty($doc['filepath'])) {
-          // if 'filepath' already holds a relative path like 'uploads/abc.pdf'
-          $pdfUrl = $baseUrl . ltrim($doc['filepath'], '/');
-        } else {
-          // fallback: assume uploads/<filename>
-          $pdfUrl = $baseUrl . 'uploads/' . rawurlencode($doc['filename']);
-        }
-    ?>
-        <a href="document.php?id=<?php echo (int)$doc['id']; ?>" class="doc-card">
-          <div class="doc-preview">
-            <!-- Canvas will render page 1 of the PDF -->
-            <canvas class="pdf-thumb" data-src="<?php echo htmlspecialchars($pdfUrl, ENT_QUOTES); ?>"></canvas>
-          </div>
-          <div class="doc-filename"><?php echo htmlspecialchars($doc['filename']); ?></div>
-        </a>
-    <?php
-      endforeach;
-    else: ?>
-      <p class="text-muted">No documents uploaded yet.</p>
-    <?php endif; ?>
-  </div>
-
+  <div id="alert" class="mt-3"></div>
 </div>
 
-<!-- PDF.js (from jsDelivr CDN) -->
-<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+<!-- Permissions Modal -->
+<div class="modal fade perm-modal" id="permModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Link permissions</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="perm-hero text-center">
+          <div class="shield"><i class="bi bi-shield-check"></i></div>
+          <div>
+            <div class="h6 mb-0">Control what viewers can do</div>
+            <div class="text-muted small">Toggle options before generating the link</div>
+          </div>
+        </div>
+
+        <!-- Bootstrap Toggle switches -->
+        <div class="toggle-list">
+
+          <div class="toggle-row">
+            <input id="permDownload" type="checkbox" checked
+                   data-toggle="toggle" data-on="ON" data-off="OFF"
+                   data-onstyle="primary" data-offstyle="light" data-size="sm">
+            <span class="label-inline">Allow downloading</span>
+          </div>
+
+          <div class="toggle-row">
+            <input id="permSearch" type="checkbox"
+                   data-toggle="toggle" data-on="ON" data-off="OFF"
+                   data-onstyle="primary" data-offstyle="light" data-size="sm">
+            <span class="label-inline">Allow printing</span>
+          </div>
+
+          <div class="toggle-row">
+            <input id="permAnalytics" type="checkbox" checked
+                   data-toggle="toggle" data-on="ON" data-off="OFF"
+                   data-onstyle="primary" data-offstyle="light" data-size="sm">
+            <span class="label-inline">Add watermark</span>
+          </div>
+
+          <!-- Helper text under list -->
+          <div class="toggle-text">
+            <div class="sub mt-2">These settings apply to the generated link only.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="createLink">
+          <i class="bi bi-magic"></i> Create link
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Bootstrap Toggle (ON/OFF pill switches) -->
+<link href="https://cdn.jsdelivr.net/gh/minhur/bootstrap-toggle@2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/minhur/bootstrap-toggle@2.2.2/js/bootstrap-toggle.min.js"></script>
+
 <script>
-  // Configure PDF.js worker
-  if (window['pdfjsLib']) {
-    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
+(function($){
+  const $tbody   = $('#filesTable tbody');
+  const $count   = $('#countBadge');
+  const $empty   = $('#emptyState');
+  const $bulkBtn = $('#bulkDelete');
+  const $checkAll= $('#checkAll');
+  let genBtn = null;
+  let linkHolder = null;
+
+  // Initialize toggles when modal opens (ensures correct rendering every time)
+  $('#permModal').on('shown.bs.modal', function(){
+    $('#permDownload, #permSearch, #permAnalytics').bootstrapToggle('destroy').bootstrapToggle();
+  });
+
+  function humanSize(bytes){
+    if (bytes === 0 || bytes == null) return '—';
+    const u = ['B','KB','MB','GB']; let i=0, n=bytes;
+    while(n >= 1024 && i < u.length-1){ n/=1024; i++; }
+    return (i ? n.toFixed(2) : n.toFixed(0)) + ' ' + u[i];
+  }
+  function iconFor(name){
+    const ext = (name.split('.').pop() || '').toLowerCase();
+    if (ext === 'pdf') return '<div class="file-icon text-danger" title="PDF"><i class="bi bi-file-earmark-pdf"></i></div>';
+    if (['png','jpg','jpeg','gif','webp','bmp','svg'].includes(ext))
+      return '<div class="file-icon" title="Image"><i class="bi bi-file-image"></i></div>';
+    return '<div class="file-icon" title="File"><i class="bi bi-file-earmark"></i></div>';
+  }
+  function showAlert(msg, type){
+    $('#alert').html('<div class="alert alert-'+type+'">'+msg+'</div>');
+    setTimeout(()=> $('#alert .alert').fadeOut(250, function(){ $(this).remove(); }), 2200);
   }
 
-  // Render first page into a canvas
-  async function renderThumb(canvas, url){
-    try{
-      const pdf = await pdfjsLib.getDocument({ url }).promise;
-      const page = await pdf.getPage(1);
-      // Scale so that the thumbnail height fits the preview area nicely
-      const viewport = page.getViewport({ scale: 1.0 });
-      const maxH = canvas.parentElement.clientHeight - 24; // padding guard
-      const scale = Math.min(1.6, Math.max(0.5, maxH / viewport.height)); // clamp scale
-      const v2 = page.getViewport({ scale });
-
-      canvas.width  = v2.width;
-      canvas.height = v2.height;
-
-      const ctx = canvas.getContext('2d', { alpha: false });
-      await page.render({ canvasContext: ctx, viewport: v2 }).promise;
-    }catch(e){
-      // If it fails, show a simple fallback
-      const ctx = canvas.getContext('2d');
-      canvas.width = 200; canvas.height = 260;
-      ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,canvas.width,canvas.height);
-      ctx.strokeStyle = '#e5e7eb'; ctx.strokeRect(0,0,canvas.width,canvas.height);
-      ctx.fillStyle = '#6b7280';
-      ctx.font = '14px sans-serif';
-      ctx.fillText('Preview unavailable', 20, 130);
-      console.error('PDF thumb error:', e);
+  function renderRows(files){
+    $tbody.empty();
+    if(!files || !files.length){
+      $empty.removeClass('d-none'); $count.text('0'); return;
     }
+    $empty.addClass('d-none'); $count.text(files.length);
+
+    files.forEach(f=>{
+      const size = humanSize(f.size);
+      const mod  = f.modified || f.updated_at || '';
+      const url  = f.url || '';
+
+      const $tr = $('<tr>');
+      $tr.append('<td><input type="checkbox" class="row-check" data-id="'+f.id+'"></td>');
+      $tr.append(`
+        <td class="text-truncate" title="${f.filename}">
+          <div class="d-flex align-items-center" style="gap:10px;">
+            ${iconFor(f.filename)}
+            <span class="text-truncate">${f.filename}</span>
+          </div>
+        </td>
+      `);
+      $tr.append('<td>'+size+'</td>');
+      $tr.append('<td>'+mod+'</td>');
+      $tr.append('<td><span class="badge-secure">Secure</span></td>');
+      $tr.append(`
+        <td>
+          <div class="d-flex align-items-center" style="gap:8px;">
+            <button class="btn btn-outline-primary btn-sm btn-icon generate" data-id="${f.id}">
+              <i class="bi bi-link-45deg"></i> Generate
+            </button>
+            <button class="btn btn-outline-secondary btn-sm btn-icon copy" data-url="${url}" ${url ? '' : 'disabled'}>
+              <i class="bi bi-clipboard"></i> Copy
+            </button>
+            <button class="btn btn-outline-info btn-sm btn-icon embed" data-url="${url}" ${url ? '' : 'disabled'}>
+              <i class="bi bi-code-slash"></i> Embed
+            </button>
+            <button class="btn btn-outline-danger btn-sm delete" data-id="${f.id}">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+          <div class="small text-muted mt-1 link-holder">${url ? `<code>${url}</code>` : ''}</div>
+        </td>
+      `);
+      $tbody.append($tr);
+    });
+    syncBulkBtn();
   }
 
-  // Initialize all thumbnails on DOM ready
-  document.addEventListener('DOMContentLoaded', function(){
-    const canvases = document.querySelectorAll('canvas.pdf-thumb[data-src]');
-    canvases.forEach(cv => {
-      const src = cv.getAttribute('data-src');
-      if (src) renderThumb(cv, src);
+  function loadFiles(){
+    $.get('api/list_files.php', function(res){
+      const since = new Date();
+      since.setDate(since.getDate() - 7);
+      const files = (res && res.files) ? res.files.filter(f => {
+        const d = new Date((f.updated_at || '').replace(' ', 'T'));
+        return !isNaN(d) && d >= since;
+      }) : [];
+      renderRows(files);
+      $checkAll.prop('checked', false);
+    }, 'json').fail(()=> showAlert('Failed to load files.', 'danger'));
+  }
+
+  // Search filter
+  $('#searchInput').on('input', function(){
+    const q = this.value.toLowerCase();
+    $('#filesTable tbody tr').each(function(){
+      const name = $(this).children().eq(1).text().toLowerCase();
+      $(this).toggle(name.indexOf(q) !== -1);
+    });
+    $checkAll.prop('checked', false);
+    syncBulkBtn();
+  });
+
+  // Single delete
+  $tbody.on('click', '.delete', function(){
+    const id = $(this).data('id');
+    if(!confirm('Delete this file?')) return;
+    $.post('api/delete_file.php', { id }, loadFiles)
+     .fail(()=> showAlert('Delete failed.', 'danger'));
+  });
+
+  // Open permissions modal
+  $tbody.on('click', '.generate', function(){
+    genBtn = $(this);
+    linkHolder = genBtn.closest('td').find('.link-holder');
+    $('#permModal').data('id', genBtn.data('id')).modal('show');
+  });
+
+  // Create link with permissions
+  $('#createLink').on('click', function(){
+    const id = $('#permModal').data('id');
+    const perms = {
+      // IDs unchanged; Bootstrap Toggle sets the same underlying checkbox
+      download:  $('#permDownload').prop('checked'),
+      search:    $('#permSearch').prop('checked'),      // UI label: Allow printing
+      analytics: $('#permAnalytics').prop('checked')    // UI label: Add watermark
+    };
+    $('#permModal').modal('hide');
+    genBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm mr-1"></span>Generating');
+    $.post('api/generate_link.php', { id, permissions: JSON.stringify(perms) }, function(res){
+      const url = (res && res.url) ? res.url : '';
+      if(url){
+        linkHolder.html('<code>'+url+'</code>');
+        genBtn.closest('td').find('.copy').prop('disabled', false).data('url', url);
+      }else{
+        linkHolder.html('<span class="text-danger">No URL returned</span>');
+      }
+    }, 'json').fail(function(){
+      linkHolder.html('<span class="text-danger">Failed to generate link</span>');
+    }).always(function(){
+      genBtn.prop('disabled', false).html('<i class="bi bi-link-45deg"></i> Generate');
     });
   });
+
+  // Copy
+  $tbody.on('click', '.copy', function(){
+    const url = $(this).data('url') || '';
+    if(!url) return;
+    const ta = document.createElement('textarea');
+    ta.value = url; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    showAlert('Link copied to clipboard.', 'success');
+  });
+
+  // Embed
+  $tbody.on('click', '.embed', function(){
+    const url = $(this).data('url') || '';
+    if(!url) return;
+    window.open('embed.php?url=' + encodeURIComponent(url), '_blank');
+  });
+
+  // Bulk select
+  $('#checkAll').on('change', function(){
+    $('.row-check:visible').prop('checked', this.checked);
+    syncBulkBtn();
+  });
+  $tbody.on('change', '.row-check', syncBulkBtn);
+
+  function syncBulkBtn(){
+    const checked = $('.row-check:checked:visible').length;
+    $bulkBtn.prop('disabled', checked === 0);
+  }
+
+  // Bulk delete
+  $bulkBtn.on('click', function(){
+    const ids = $('.row-check:checked:visible').map(function(){ return $(this).data('id'); }).get();
+    if(!ids.length) return;
+    if(!confirm('Delete '+ids.length+' selected file(s)?')) return;
+    let done=0, failed=0;
+    const next = () => {
+      if(!ids.length){ loadFiles(); showAlert((failed? failed+' failed, ' : '')+done+' deleted.', failed?'danger':'success'); return; }
+      const id = ids.pop();
+      $.post('api/delete_file.php', { id })
+        .done(()=>{ done++; next(); })
+        .fail(()=>{ failed++; next(); });
+    };
+    next();
+  });
+
+  // Init
+  loadFiles();
+})(jQuery);
 </script>
 
-<?php include(INCLUDE_PATH . 'footer.php'); ?>
+<?php include 'includes/footer.php'; ?>
