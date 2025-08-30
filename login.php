@@ -14,7 +14,7 @@
  
   <style>
     body {
-      background: linear-gradient(to bottom, #4facfe, #00f2fe);
+      background: linear-gradient(to bottom, #4facfe, #0a58ca);
       font-family: 'Inter', sans-serif;
     }
     .card-container {
