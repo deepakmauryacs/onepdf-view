@@ -26,13 +26,33 @@ $mysqli->query("CREATE TABLE IF NOT EXISTS users (
     agreed_terms TINYINT(1) NOT NULL DEFAULT 0
 )");
 
+$mysqli->query("CREATE TABLE IF NOT EXISTS plans (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    billing_cycle VARCHAR(20) NOT NULL
+)");
+
+$mysqli->query("INSERT INTO plans (id, name, price, billing_cycle) VALUES
+    (1, 'Free', 0.00, 'free'),
+    (2, 'Pro', 12.00, 'month'),
+    (3, 'Pro', 499.00, 'year'),
+    (4, 'Business', 25.00, 'month'),
+    (5, 'Business', 1999.00, 'year')
+    ON DUPLICATE KEY UPDATE
+        name = VALUES(name),
+        price = VALUES(price),
+        billing_cycle = VALUES(billing_cycle)
+");
+
 $mysqli->query("CREATE TABLE IF NOT EXISTS user_plan (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     plan_id INT NOT NULL,
     start_date DATE NOT NULL,
     end_date DATE DEFAULT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (plan_id) REFERENCES plans(id)
 )");
 
 // Table for uploaded documents
