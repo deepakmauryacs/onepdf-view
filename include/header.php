@@ -1,5 +1,7 @@
 <?php
 // Common header
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+$web_base_url = $protocol . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\') . '/';
 ?>
 <!doctype html>
 <html lang="en">
@@ -19,7 +21,7 @@
 
 <nav class="navbar navbar-expand-lg sticky-top">
   <div class="container">
-    <a class="navbar-brand" href="/"><i class="bi bi-file-earmark-pdf"></i>PDFOneLink</a>
+    <a class="navbar-brand" href="<?= $web_base_url ?>"><i class="bi bi-file-earmark-pdf"></i>PDFOneLink</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
