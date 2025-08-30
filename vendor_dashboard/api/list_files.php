@@ -10,7 +10,7 @@ $host     = $_SERVER['HTTP_HOST'] ?? 'localhost';
 $basePath = rtrim(dirname(dirname(dirname($_SERVER['SCRIPT_NAME'] ?? ''))), '/');
 while ($row = $result->fetch_assoc()) {
     if (!empty($row['slug'])) {
-        $row['url'] = $scheme . $host . $basePath . '/file/' . $row['slug'];
+        $row['url'] = $scheme . $host . $basePath . '/view?doc=' . urlencode($row['slug']);
     }
     unset($row['slug']);
     // The filepath is internal and should not be exposed to the client
