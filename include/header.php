@@ -25,10 +25,10 @@
     </button>
     <div id="nav" class="collapse navbar-collapse">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
-        <li class="nav-item"><a class="nav-link" href="/#features">Features</a></li>
-        <li class="nav-item"><a class="nav-link" href="/#how">How it works</a></li>
-        <li class="nav-item"><a class="nav-link" href="/#pricing">Pricing</a></li>
-        <li class="nav-item"><a class="nav-link" href="/#faq">FAQ</a></li>
+        <li class="nav-item"><a class="nav-link" href="features.php">Features</a></li>
+        <li class="nav-item"><a class="nav-link" href="how-it-works.php">How It Works</a></li>
+        <li class="nav-item"><a class="nav-link" href="pricing.php">Pricing</a></li>
+        <li class="nav-item"><a class="nav-link" href="contact.php">Contact</a></li>
         <li class="nav-item ms-lg-3"><a class="btn btn-ghost btn-sm" href="login.php">Log in</a></li>
         <li class="nav-item ms-2"><a class="btn btn-brand btn-sm" href="registration.php">Start free</a></li>
       </ul>
