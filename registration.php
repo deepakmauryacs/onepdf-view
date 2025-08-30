@@ -2,6 +2,9 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <?php
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    ?>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Registration</title>
@@ -58,7 +61,15 @@
 
         /* Error lines always reserve space under each field */
         .error-message { color:#dc3545; font-size:0.875em; margin-top:0.25rem; min-height:1rem; }
-        
+        .spin {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to   { opacity: 1; transform: translateY(0); }
@@ -73,6 +84,8 @@
                     <h3 class="text-center mb-4">Create Account 📦</h3>
 
                     <form id="registerForm" novalidate>
+                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <div class="form-floating mb-3">
@@ -145,7 +158,7 @@
                         <div id="agreed_terms_error" class="error-message"></div>
                         
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg">Register</button>
+                            <button type="submit" class="btn btn-primary btn-lg" id="submit-btn">Register</button>
                         </div>
 
                         <!-- NEW: Already have an account? Login -->
@@ -167,6 +180,7 @@
 <script>
 document.getElementById('registerForm').addEventListener('submit', async function(e) {
     e.preventDefault();
+    $("#submit-btn").addClass("disabled").html('Register <i class="bi bi-arrow-repeat spin"></i>');
     const form = e.target;
     let valid = true;
     
@@ -221,6 +235,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     }
 
     if (!valid) {
+        $("#submit-btn").removeClass("disabled").html("Register");
         toastr.error('Please correct the errors above.', 'Validation Error');
         return;
     }
@@ -235,6 +250,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
         setTimeout(() => window.location = 'login', 1500);
     } else {
         toastr.error(result.error || 'Registration failed.', 'Error');
+        $("#submit-btn").removeClass("disabled").html("Register");
         // If server says email exists, offer quick login
         if ((result.error || '').toLowerCase().includes('email')) {
             toastr.info('Already have an account? Click to log in.', 'Login', {

@@ -2,6 +2,9 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <?php
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    ?>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Login</title>
@@ -52,7 +55,15 @@
 
     /* Error lines always visible (space reserved) */
     .error-message { color:#dc3545; font-size:0.875em; margin-top:0.25rem; min-height:1rem; }
+    .spin {
+        display: inline-block;
+        animation: spin 1s linear infinite;
+    }
 
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to   { transform: rotate(360deg); }
+    }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -65,6 +76,7 @@
       <h3 class="text-center mb-4">Login 📦</h3>
 
       <form id="loginForm" novalidate>
+        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
         <div class="form-floating mb-3">
           <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com" required>
           <label for="email">Email address</label>
@@ -81,7 +93,7 @@
         <div id="password_error" class="error-message"></div>
        
         <div class="d-grid gap-2">
-          <button type="submit" class="btn btn-primary btn-lg">Login</button>
+          <button type="submit" class="btn btn-primary btn-lg" id="submit-btn">Login </button>
         </div>
 
         <!-- NEW: No account? Register -->
@@ -101,6 +113,7 @@
   <script>
     document.getElementById('loginForm').addEventListener('submit', async function(e){
       e.preventDefault();
+      $("#submit-btn").addClass("disabled").html('Login <i class="bi bi-arrow-repeat spin"></i>');
       const form = e.target;
       let valid = true;
      
@@ -124,6 +137,7 @@
       }
      
       if (!valid) {
+        $("#submit-btn").removeClass("disabled").html("Login");
         toastr.error('Please correct the errors above.', 'Validation Error');
         return;
       }
@@ -138,6 +152,7 @@
         toastr.success('Login successful. Redirecting to dashboard...', 'Success');
         setTimeout(() => window.location = 'vendor_dashboard/dashboard', 1500);
       } else {
+        $("#submit-btn").removeClass("disabled").html("Login");
         toastr.error(result.error || 'Login failed.', 'Error');
       }
     });

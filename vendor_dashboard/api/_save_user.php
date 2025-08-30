@@ -6,6 +6,7 @@ $input = $_POST;
 $errors = [];
 $required = ['country','first_name','last_name','company','plan_id','email','password'];
 foreach ($required as $field) {
+    $input[$field] = htmlspecialchars(trim($input[$field]), ENT_QUOTES, 'UTF-8');
     if (empty($input[$field])) {
         $errors[] = "$field is required";
     }
@@ -23,6 +24,30 @@ if (empty($input['agreed_terms'])) {
 $allowedPlans = ['1','2','3','4','5'];
 if (!empty($input['plan_id']) && !in_array($input['plan_id'], $allowedPlans)) {
     $errors[] = 'Invalid plan selected';
+}
+
+// Name validation (only letters, spaces, hyphen, apostrophe)
+if (!empty($input['first_name']) && !preg_match("/^[a-zA-Z\s'-]+$/", $input['first_name'])) {
+    $errors[] = 'First name contains invalid characters';
+}
+if (!empty($input['last_name']) && !preg_match("/^[a-zA-Z\s'-]+$/", $input['last_name'])) {
+    $errors[] = 'Last name contains invalid characters';
+}
+
+// Company validation (letters, numbers, spaces, basic symbols)
+if (!empty($input['company']) && !preg_match("/^[a-zA-Z0-9\s&.,'-]+$/", $input['company'])) {
+    $errors[] = 'Company name contains invalid characters';
+}
+
+if (!hash_equals($_SESSION['csrf_token'], $input['csrf_token'])) {
+    $errors[] = "CSRF validation failed";
+}
+
+// ✅ Check if Email Already Exists
+$stmt1 = $mysqli->prepare("SELECT id FROM users WHERE email = ?");
+$stmt1->execute([$input['email']]);
+if ($stmt1->fetch()) {
+    $errors[] = "Email already exists.";
 }
 
 if ($errors) {
@@ -60,6 +85,7 @@ if ($stmt->execute()) {
     $stmtPlan = $mysqli->prepare('INSERT INTO user_plan (user_id, plan_id, start_date, end_date) VALUES (?,?,?,?)');
     $stmtPlan->bind_param('iiss', $user_id, $plan_id, $start_date, $end_date);
     $stmtPlan->execute();
+    unset($_SESSION['csrf_token']);
     echo json_encode(['success' => true]);
 } else {
     echo json_encode(['error' => 'Email already exists']);
