@@ -2,6 +2,7 @@
 // Common header
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
 $web_base_url = $protocol . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\') . '/';
+$current_page = basename($_SERVER['SCRIPT_NAME']);
 ?>
 <!doctype html>
 <html lang="en">
@@ -27,12 +28,12 @@ $web_base_url = $protocol . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['SCRI
     </button>
     <div id="nav" class="collapse navbar-collapse">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
-        <li class="nav-item"><a class="nav-link" href="features.php">Features</a></li>
-        <li class="nav-item"><a class="nav-link" href="how-it-works.php">How It Works</a></li>
-        <li class="nav-item"><a class="nav-link" href="pricing.php">Pricing</a></li>
-        <li class="nav-item"><a class="nav-link" href="contact.php">Contact</a></li>
-        <li class="nav-item ms-lg-3"><a class="btn btn-ghost btn-sm" href="login.php">Log in</a></li>
-        <li class="nav-item ms-2"><a class="btn btn-brand btn-sm" href="registration.php">Start free</a></li>
+        <li class="nav-item"><a class="nav-link <?= $current_page === 'features.php' ? 'active' : '' ?>" href="features.php">Features</a></li>
+        <li class="nav-item"><a class="nav-link <?= $current_page === 'how-it-works.php' ? 'active' : '' ?>" href="how-it-works.php">How It Works</a></li>
+        <li class="nav-item"><a class="nav-link <?= $current_page === 'pricing.php' ? 'active' : '' ?>" href="pricing.php">Pricing</a></li>
+        <li class="nav-item"><a class="nav-link <?= $current_page === 'contact.php' ? 'active' : '' ?>" href="contact.php">Contact</a></li>
+        <li class="nav-item ms-lg-3"><a class="btn btn-ghost btn-sm <?= $current_page === 'login.php' ? 'active' : '' ?>" href="login.php">Log in</a></li>
+        <li class="nav-item ms-2"><a class="btn btn-brand btn-sm <?= $current_page === 'registration.php' ? 'active' : '' ?>" href="registration.php">Start free</a></li>
       </ul>
     </div>
   </div>
