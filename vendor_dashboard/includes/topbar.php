@@ -130,5 +130,5 @@ $typeIcons = [
                 </div>
             </li>
         </ul>
-    </nav> 
+    </nav>  
     <!-- End of Topbar -->
