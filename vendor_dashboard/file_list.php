@@ -13,64 +13,50 @@ include 'includes/topbar.php';
   .file-icon{ width:36px; height:36px; display:grid; place-items:center; border-radius:10px; background:#eef2ff; color:#4338ca; }
 
   /* ---------- Header tools layout ---------- */
-  .mf-header{
-    display:flex; align-items:center; gap:12px;
-    /* No space-between; we’ll let actions stretch to the right */
-    justify-content:flex-start;
-  }
-  .mf-left{ flex:0 0 auto; }                 /* title area width = content */
-  .mf-actions{
-    flex:1 1 auto;                           /* take all remaining space */
-    display:flex; align-items:center; gap:12px;
-    flex-wrap:nowrap;                        /* keep in one row */
-    margin-left:auto;                        /* push to the right */
-  }
-
-  /* Search input should stretch to fill row (removes right-side blank space) */
-  .mf-search.input-group{
-    flex:1 1 auto;                           /* grow to fill */
-    min-width:260px;
-    max-width:none;                          /* no hard cap */
-  }
-
-  /* Seamless rounded search */
+  .mf-header{ display:flex; align-items:center; gap:12px; justify-content:flex-start; }
+  .mf-left{ flex:0 0 auto; }
+  .mf-actions{ flex:1 1 auto; display:flex; align-items:center; gap:12px; flex-wrap:nowrap; margin-left:auto; }
+  .mf-search.input-group{ flex:1 1 auto; min-width:260px; max-width:none; }
   .mf-search.input-group > .input-group-prepend .input-group-text{
     background:#fff; height:40px; padding:.45rem .70rem;
     border-top-left-radius:10px !important; border-bottom-left-radius:10px !important;
-    border-top-right-radius:0 !important; border-bottom-right-radius:0 !important;
     border-right:0 !important; display:flex; align-items:center;
   }
   .mf-search.input-group > .form-control{
     height:40px; padding:.45rem .75rem;
     border-top-right-radius:10px !important; border-bottom-right-radius:10px !important;
-    border-top-left-radius:0 !important; border-bottom-left-radius:0 !important;
     border-left:0 !important; box-shadow:none !important;
   }
-
-  /* “Delete selected” button aligned & same height */
   .mf-actions .btn{
     height:40px; padding:0 .9rem; border-radius:10px;
     display:inline-flex; align-items:center; gap:.35rem; line-height:1;
-    flex:0 0 auto;                           /* don’t stretch */
   }
-
-  /* Badges & buttons */
   .badge-secure{ background:#16a34a; color:#fff; border-radius:999px; padding:.2rem .5rem; font-weight:600; }
   .btn-icon{ display:inline-flex; align-items:center; gap:.35rem; }
-
-  /* Empty state */
-  .empty{
-    padding:32px; text-align:center; color:#6b7280;
-    border-top:1px dashed #e5e7eb; border-bottom-left-radius:12px; border-bottom-right-radius:12px;
-  }
-
-  /* Small tweaks */
+  .empty{ padding:32px; text-align:center; color:#6b7280; border-top:1px dashed #e5e7eb; border-bottom-left-radius:12px; border-bottom-right-radius:12px; }
   .card-header{ padding:.85rem 1.1rem; }
   @media (max-width: 768px){
     .mf-header{ flex-wrap:wrap; }
     .mf-actions{ width:100%; margin-left:0; }
     .mf-search.input-group{ min-width:0; }
   }
+
+  /* ---- Modern Permissions Modal ---- */
+  .perm-modal .modal-content{ border:0; border-radius:16px; box-shadow:0 20px 60px rgba(2,6,23,.18); }
+  .perm-modal .modal-header{ border:0; padding:20px 24px 0; }
+  .perm-modal .modal-body{ padding:8px 24px 24px; }
+  .perm-modal .modal-footer{ border:0; padding:0 24px 24px; }
+  .perm-hero{
+    display:flex; align-items:center; justify-content:center; gap:12px;
+    flex-direction:column; margin:6px 0 18px;
+  }
+  .perm-hero .shield{ width:60px; height:60px; border-radius:16px; background:#eef2ff; display:grid; place-items:center; }
+  .perm-hero .shield i{ font-size:28px; color:#3b82f6; }
+  .toggle-list{ display:grid; gap:16px; margin-top:6px; }
+  .toggle-row{ display:flex; align-items-center; gap:12px; }
+  .toggle-text .title{ font-weight:600; color:#1f2937; }
+  .toggle-text .sub{ font-size:.875rem; color:#6b7280; margin-top:2px; }
+  .toggle-row .label-inline{ margin-left:8px; font-weight:600; color:#1f2937; }
 </style>
 
 <div class="container-fluid">
@@ -86,9 +72,7 @@ include 'includes/topbar.php';
           <span class="font-weight-bold">Files</span>
           <span class="badge badge-primary ml-1" id="countBadge">0</span>
         </div>
-
         <div class="mf-actions">
-          <!-- Search stretches; button hugs the right -->
           <div class="input-group mf-search">
             <div class="input-group-prepend">
               <span class="input-group-text"><i class="bi bi-search"></i></span>
@@ -101,7 +85,6 @@ include 'includes/topbar.php';
         </div>
       </div>
     </div>
-
     <div class="table-responsive">
       <table class="table mb-0" id="filesTable">
         <thead>
@@ -127,38 +110,72 @@ include 'includes/topbar.php';
 </div>
 
 <!-- Permissions Modal -->
-<div class="modal fade" id="permModal" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
+<div class="modal fade perm-modal" id="permModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Link Permissions</h5>
+        <h5 class="modal-title">Link permissions</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+
       <div class="modal-body">
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="permDownload" checked>
-          <label class="form-check-label" for="permDownload">Allow Download</label>
+        <div class="perm-hero text-center">
+          <div class="shield"><i class="bi bi-shield-check"></i></div>
+          <div>
+            <div class="h6 mb-0">Control what viewers can do</div>
+            <div class="text-muted small">Toggle options before generating the link</div>
+          </div>
         </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="permSearch" checked>
-          <label class="form-check-label" for="permSearch">Allow Search</label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="permAnalytics" checked>
-          <label class="form-check-label" for="permAnalytics">Enable Analytics</label>
+
+        <!-- Bootstrap Toggle switches -->
+        <div class="toggle-list">
+
+          <div class="toggle-row">
+            <input id="permDownload" type="checkbox" checked
+                   data-toggle="toggle" data-on="ON" data-off="OFF"
+                   data-onstyle="primary" data-offstyle="light" data-size="sm">
+            <span class="label-inline">Allow downloading</span>
+          </div>
+
+          <div class="toggle-row">
+            <input id="permSearch" type="checkbox"
+                   data-toggle="toggle" data-on="ON" data-off="OFF"
+                   data-onstyle="primary" data-offstyle="light" data-size="sm">
+            <span class="label-inline">Allow printing</span>
+          </div>
+
+          <div class="toggle-row">
+            <input id="permAnalytics" type="checkbox" checked
+                   data-toggle="toggle" data-on="ON" data-off="OFF"
+                   data-onstyle="primary" data-offstyle="light" data-size="sm">
+            <span class="label-inline">Add watermark</span>
+          </div>
+
+          <!-- Helper text under list -->
+          <div class="toggle-text">
+            <div class="sub mt-2">These settings apply to the generated link only.</div>
+          </div>
         </div>
       </div>
+
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" id="createLink">Create Link</button>
+        <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="createLink">
+          <i class="bi bi-magic"></i> Create link
+        </button>
       </div>
     </div>
   </div>
 </div>
 
+<!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Bootstrap Toggle (ON/OFF pill switches) -->
+<link href="https://cdn.jsdelivr.net/gh/minhur/bootstrap-toggle@2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/minhur/bootstrap-toggle@2.2.2/js/bootstrap-toggle.min.js"></script>
+
 <script>
 (function($){
   const $tbody   = $('#filesTable tbody');
@@ -168,6 +185,11 @@ include 'includes/topbar.php';
   const $checkAll= $('#checkAll');
   let genBtn = null;
   let linkHolder = null;
+
+  // Initialize toggles when modal opens (ensures correct rendering every time)
+  $('#permModal').on('shown.bs.modal', function(){
+    $('#permDownload, #permSearch, #permAnalytics').bootstrapToggle('destroy').bootstrapToggle();
+  });
 
   function humanSize(bytes){
     if (bytes === 0 || bytes == null) return '—';
@@ -273,9 +295,10 @@ include 'includes/topbar.php';
   $('#createLink').on('click', function(){
     const id = $('#permModal').data('id');
     const perms = {
-      download: $('#permDownload').prop('checked'),
-      search: $('#permSearch').prop('checked'),
-      analytics: $('#permAnalytics').prop('checked')
+      // IDs unchanged; Bootstrap Toggle sets the same underlying checkbox
+      download:  $('#permDownload').prop('checked'),
+      search:    $('#permSearch').prop('checked'),      // UI label: Allow printing
+      analytics: $('#permAnalytics').prop('checked')    // UI label: Add watermark
     };
     $('#permModal').modal('hide');
     genBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm mr-1"></span>Generating');
