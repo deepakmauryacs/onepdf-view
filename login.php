@@ -32,9 +32,7 @@
       padding: 3rem;
       animation: fadeIn 1s ease-in-out;
     }
-    .form-control, .btn {
-      border-radius: 0 !important;
-    }
+    .form-control, .btn { border-radius: 0 !important; }
     .form-control:focus {
       box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
       border-color: #0d6efd;
@@ -44,38 +42,20 @@
       border-color: #0d6efd;
       transition: transform 0.2s, box-shadow 0.2s;
     }
-    .btn-primary:hover {
-      transform: translate(2px, 2px);
-      box-shadow: none;
-    }
-    .input-group-password {
-      position: relative;
-    }
+    .btn-primary:hover { transform: translate(2px, 2px); box-shadow: none; }
+
+    .input-group-password { position: relative; }
     .toggle-password {
-      position: absolute;
-      right: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
+      position: absolute; right: 15px; top: 50%;
+      transform: translateY(-50%); cursor: pointer;
     }
-    .error-message {
-      color: #dc3545;
-      font-size: 0.875em;
-      margin-top: 0.25rem;
-      display: none; /* Initially hidden */
-    }
-    .is-invalid + .error-message {
-      display: block; /* Show when input is invalid */
-    }
+
+    /* Error lines always visible (space reserved) */
+    .error-message { color:#dc3545; font-size:0.875em; margin-top:0.25rem; min-height:1rem; }
+
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -83,6 +63,7 @@
   <div class="container py-5">
     <div class="card-container">
       <h3 class="text-center mb-4">Login 📦</h3>
+
       <form id="loginForm" novalidate>
         <div class="form-floating mb-3">
           <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com" required>
@@ -102,7 +83,14 @@
         <div class="d-grid gap-2">
           <button type="submit" class="btn btn-primary btn-lg">Login</button>
         </div>
+
+        <!-- NEW: No account? Register -->
+        <div class="text-center mt-3">
+          <span class="text-muted">Don’t have an account?</span>
+          <a href="registration" class="fw-semibold text-decoration-none">Create one</a>
+        </div>
       </form>
+
       <div id="loginAlert" class="mt-3"></div>
     </div>
   </div>
@@ -157,13 +145,9 @@
     // Password show/hide logic
     const togglePassword = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('password');
-
     togglePassword.addEventListener('click', function() {
-      // Toggle the type attribute
       const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
       passwordInput.setAttribute('type', type);
-
-      // Toggle the icon
       this.classList.toggle('bi-eye');
       this.classList.toggle('bi-eye-slash');
     });

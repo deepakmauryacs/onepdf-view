@@ -34,9 +34,7 @@
             padding: 3rem;
             animation: fadeIn 1s ease-in-out;
         }
-        .form-control, .btn {
-            border-radius: 0 !important;
-        }
+        .form-control, .btn { border-radius: 0 !important; }
         .form-control:focus {
             box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
             border-color: #0d6efd;
@@ -46,51 +44,24 @@
             border-color: #0d6efd;
             transition: transform 0.2s, box-shadow 0.2s;
         }
-        .btn-primary:hover {
-            transform: translate(2px, 2px);
-            box-shadow: none;
-        }
-        .input-group-password {
-            position: relative;
-        }
+        .btn-primary:hover { transform: translate(2px, 2px); box-shadow: none; }
+
+        .input-group-password { position: relative; }
         .toggle-password {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
+            position: absolute; right: 15px; top: 50%;
+            transform: translateY(-50%); cursor: pointer;
         }
-        #password-strength {
-            margin-top: 5px;
-            display: flex;
-            align-items: center;
-        }
-        .progress {
-            height: 8px;
-            margin-right: 10px;
-            flex-grow: 1;
-        }
-        .progress-bar {
-            transition: width 0.3s ease;
-        }
-        .error-message {
-            color: #dc3545;
-            font-size: 0.875em;
-            margin-top: 0.25rem;
-            display: none; /* Initially hidden */
-        }
-        .is-invalid + .error-message {
-            display: block; /* Show when input is invalid */
-        }
+
+        #password-strength { margin-top: 5px; display: flex; align-items: center; }
+        .progress { height: 8px; margin-right: 10px; flex-grow: 1; }
+        .progress-bar { transition: width 0.3s ease; }
+
+        /* Error lines always reserve space under each field */
+        .error-message { color:#dc3545; font-size:0.875em; margin-top:0.25rem; min-height:1rem; }
+        
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -100,87 +71,96 @@
             <div class="col-md-12">
                 <div class="card card-container">
                     <h3 class="text-center mb-4">Create Account 📦</h3>
+
                     <form id="registerForm" novalidate>
-                <div class="row g-3">
-                    <div class="col-md-6">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input type="text" name="first_name" class="form-control" id="firstName" placeholder="First Name" required>
+                                    <label for="firstName">First Name</label>
+                                </div>
+                                <div id="first_name_error" class="error-message"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input type="text" name="last_name" class="form-control" id="lastName" placeholder="Last Name" required>
+                                    <label for="lastName">Last Name</label>
+                                </div>
+                                <div id="last_name_error" class="error-message"></div>
+                            </div>
+                        </div>
+
                         <div class="form-floating mb-3">
-                            <input type="text" name="first_name" class="form-control" id="firstName" placeholder="First Name" required>
-                            <label for="firstName">First Name</label>
+                            <input type="text" name="country" class="form-control" id="country" placeholder="Country" required>
+                            <label for="country">Country</label>
                         </div>
-                        <div id="first_name_error" class="error-message"></div>
-                    </div>
-                    <div class="col-md-6">
+                        <div id="country_error" class="error-message"></div>
+                        
                         <div class="form-floating mb-3">
-                            <input type="text" name="last_name" class="form-control" id="lastName" placeholder="Last Name" required>
-                            <label for="lastName">Last Name</label>
+                            <input type="text" name="company" class="form-control" id="company" placeholder="Company" required>
+                            <label for="company">Company</label>
                         </div>
-                        <div id="last_name_error" class="error-message"></div>
-                    </div>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="text" name="country" class="form-control" id="country" placeholder="Country" required>
-                    <label for="country">Country</label>
-                </div>
-                <div id="country_error" class="error-message"></div>
-                
-                <div class="form-floating mb-3">
-                    <input type="text" name="company" class="form-control" id="company" placeholder="Company" required>
-                    <label for="company">Company</label>
-                </div>
-                <div id="company_error" class="error-message"></div>
+                        <div id="company_error" class="error-message"></div>
 
-
-                <div class="form-floating mb-3">
-                    <select name="plan_id" class="form-select" id="plan" required>
-                        <option value="" selected>Select Plan</option>
-                        <option value="1">Free - $0</option>
-                        <option value="2">Pro - $12/month</option>
-                        <option value="3">Pro - $499/year</option>
-                        <option value="4">Business - $25/month</option>
-                        <option value="5">Business - $1999/year</option>
-                    </select>
-                    <label for="plan">Plan</label>
-                </div>
-                <div id="plan_id_error" class="error-message"></div>
-
-                <div class="form-floating mb-3">
-                    <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com" required>
-                    <label for="email">Email address</label>
-                </div>
-                <div id="email_error" class="error-message"></div>
-                
-                <div class="mb-3">
-                    <label class="form-label" for="password">Password</label>
-                    <div class="input-group-password">
-                        <input type="password" name="password" class="form-control" id="password" required minlength="6">
-                        <i class="bi bi-eye toggle-password" id="togglePassword"></i>
-                    </div>
-                    <div id="password_error" class="error-message"></div>
-                    <div id="password-strength">
-                        <div class="progress" role="progressbar" aria-label="Password strength" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar" style="width: 0%"></div>
+                        <div class="form-floating mb-3">
+                            <select name="plan_id" class="form-select" id="plan" required>
+                                <option value="" selected>Select Plan</option>
+                                <option value="1">Free - $0</option>
+                                <option value="2">Pro - $12/month</option>
+                                <option value="3">Pro - $499/year</option>
+                                <option value="4">Business - $25/month</option>
+                                <option value="5">Business - $1999/year</option>
+                            </select>
+                            <label for="plan">Plan</label>
                         </div>
-                        <span id="strength-text" class="text-muted"></span>
-                    </div>
-                </div>
-                
-                <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" name="agreed_terms" id="terms">
-                    <label class="form-check-label" for="terms">
-                        I agree to the <a href="#" class="text-decoration-none">terms and conditions</a>
-                    </label>
-                </div>
-                <div id="agreed_terms_error" class="error-message"></div>
-                
-                <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary btn-lg">Register</button>
-                </div>
+                        <div id="plan_id_error" class="error-message"></div>
+
+                        <div class="form-floating mb-3">
+                            <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com" required>
+                            <label for="email">Email address</label>
+                        </div>
+                        <div id="email_error" class="error-message"></div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label" for="password">Password</label>
+                            <div class="input-group-password">
+                                <input type="password" name="password" class="form-control" id="password" required minlength="6">
+                                <i class="bi bi-eye toggle-password" id="togglePassword"></i>
+                            </div>
+                            <div id="password_error" class="error-message"></div>
+                            <div id="password-strength">
+                                <div class="progress" role="progressbar" aria-label="Password strength" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar" style="width: 0%"></div>
+                                </div>
+                                <span id="strength-text" class="text-muted"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" name="agreed_terms" id="terms">
+                            <label class="form-check-label" for="terms">
+                                I agree to the <a href="#" class="text-decoration-none">terms and conditions</a>
+                            </label>
+                        </div>
+                        <div id="agreed_terms_error" class="error-message"></div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Register</button>
+                        </div>
+
+                        <!-- NEW: Already have an account? Login -->
+                        <div class="text-center mt-3">
+                            <span class="text-muted">Already have an account?</span>
+                            <a href="login.php" class="fw-semibold text-decoration-none">Log in</a>
+                        </div>
                     </form>
+
                     <div id="regAlert" class="mt-3"></div>
                 </div>
             </div>
         </div>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
@@ -252,9 +232,16 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     const result = await res.json();
     if (result.success) {
         toastr.success('Registration successful. Redirecting to login...', 'Success');
-        setTimeout(() => window.location = 'login.php', 1500);
+        setTimeout(() => window.location = 'login', 1500);
     } else {
         toastr.error(result.error || 'Registration failed.', 'Error');
+        // If server says email exists, offer quick login
+        if ((result.error || '').toLowerCase().includes('email')) {
+            toastr.info('Already have an account? Click to log in.', 'Login', {
+                onclick: () => window.location = 'login',
+                timeOut: 4000
+            });
+        }
     }
 });
 
@@ -265,37 +252,20 @@ document.getElementById('password').addEventListener('input', function() {
     const strengthText = document.getElementById('strength-text');
     let strength = 0;
     
-    // Check for length
-    if (password.length >= 8) {
-        strength += 25;
-    }
-    // Check for uppercase letters
-    if (/[A-Z]/.test(password)) {
-        strength += 25;
-    }
-    // Check for numbers
-    if (/[0-9]/.test(password)) {
-        strength += 25;
-    }
-    // Check for special characters
-    if (/[!@#\$%\^&\*]/.test(password)) {
-        strength += 25;
-    }
+    if (password.length >= 8) strength += 25;
+    if (/[A-Z]/.test(password)) strength += 25;
+    if (/[0-9]/.test(password)) strength += 25;
+    if (/[!@#\$%\^&\*]/.test(password)) strength += 25;
 
-    let barColor = '';
-    let text = '';
-    if (password.length === 0) {
-        strength = 0;
-        text = '';
+    let barColor = '', text = '';
+    if (!password.length) {
+        strength = 0; text = '';
     } else if (strength < 50) {
-        barColor = 'bg-danger';
-        text = 'Weak';
+        barColor = 'bg-danger'; text = 'Weak';
     } else if (strength < 100) {
-        barColor = 'bg-warning';
-        text = 'Medium';
+        barColor = 'bg-warning'; text = 'Medium';
     } else {
-        barColor = 'bg-success';
-        text = 'Strong';
+        barColor = 'bg-success'; text = 'Strong';
     }
 
     strengthBar.style.width = strength + '%';
@@ -306,13 +276,9 @@ document.getElementById('password').addEventListener('input', function() {
 // Password show/hide logic
 const togglePassword = document.getElementById('togglePassword');
 const passwordInput = document.getElementById('password');
-
 togglePassword.addEventListener('click', function() {
-    // Toggle the type attribute
     const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
     passwordInput.setAttribute('type', type);
-
-    // Toggle the icon
     this.classList.toggle('bi-eye');
     this.classList.toggle('bi-eye-slash');
 });
