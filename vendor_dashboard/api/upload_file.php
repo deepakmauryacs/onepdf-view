@@ -16,13 +16,13 @@ if ($file['error'] !== UPLOAD_ERR_OK) {
     exit;
 }
 
-// Validate file type (PDF or image)
+// Validate file type (PDF only)
 $finfo = finfo_open(FILEINFO_MIME_TYPE);
 $mime  = finfo_file($finfo, $file['tmp_name']);
 finfo_close($finfo);
-if (strpos($mime, 'application/pdf') !== 0 && strpos($mime, 'image/') !== 0) {
+if (strpos($mime, 'application/pdf') !== 0) {
     http_response_code(400);
-    echo json_encode(['error' => 'Only PDF or image files are allowed']);
+    echo json_encode(['error' => 'Only PDF files are allowed']);
     exit;
 }
 
