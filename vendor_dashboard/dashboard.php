@@ -49,14 +49,15 @@ include 'includes/topbar.php';
     .mf-search{ min-width:0; }
   }
 
-  /* ---- Modern Permissions Modal ---- */
+  /* ---- Modern Permissions Modal (Bootstrap 4) ---- */
+  .rounded-lg{ border-radius:16px !important; }
   .perm-modal .modal-content{ border:0; border-radius:16px; box-shadow:0 20px 60px rgba(2,6,23,.18); }
-  .perm-modal .modal-header{ border:0; padding:20px 24px 0; }
-  .perm-modal .modal-body{ padding:8px 24px 24px; }
-  .perm-modal .modal-footer{ border:0; padding:0 24px 24px; }
+  .perm-modal .modal-header{ border:0; padding:16px 20px; }
+  .perm-modal .modal-body{ padding:16px 20px 20px; }
+  .perm-modal .modal-footer{ border:0; padding:12px 20px 20px; }
   .perm-hero{
     display:flex; align-items:center; justify-content:center; gap:12px;
-    flex-direction:column; margin:6px 0 18px;
+    flex-direction:column; margin:8px 0 18px;
   }
   .perm-hero .shield{ width:60px; height:60px; border-radius:16px; background:#eef2ff; display:grid; place-items:center; }
   .perm-hero .shield i{ font-size:28px; color:#3b82f6; }
@@ -65,6 +66,9 @@ include 'includes/topbar.php';
   .toggle-text .title{ font-weight:600; color:#1f2937; }
   .toggle-text .sub{ font-size:.875rem; color:#6b7280; margin-top:2px; }
   .toggle-row .label-inline{ margin-left:8px; font-weight:600; color:#1f2937; }
+  .perm-modal .btn-primary,
+  .perm-modal .btn-outline-secondary{ border-radius:10px; }
+  .perm-modal .btn-primary{ font-weight:600; }
 </style>
 
 <div class="container-fluid">
@@ -120,18 +124,25 @@ include 'includes/topbar.php';
   <div id="alert" class="mt-3"></div>
 </div>
 
-<!-- Permissions Modal -->
+<!-- Permissions Modal (polished like Upgrade modal) -->
 <div class="modal fade perm-modal" id="permModal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Link permissions</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <div class="modal-content shadow-lg border-0 rounded-lg">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title mb-0">
+          <i class="bi bi-shield-lock mr-2"></i> Link Permissions
+        </h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
 
       <div class="modal-body">
+        <p class="text-muted mb-3">
+          <i class="bi bi-lightning-charge-fill text-warning mr-1"></i>
+          Choose what viewers can do before generating the link.
+        </p>
+
         <div class="perm-hero text-center">
           <div class="shield"><i class="bi bi-shield-check"></i></div>
           <div>
@@ -140,8 +151,11 @@ include 'includes/topbar.php';
           </div>
         </div>
 
+        <!-- Bootstrap Toggle switches -->
         <div class="toggle-list">
+
           <div class="toggle-row">
+            <i class="bi bi-download mr-2 text-secondary"></i>
             <input id="permDownload" type="checkbox" checked
                    data-toggle="toggle" data-on="ON" data-off="OFF"
                    data-onstyle="primary" data-offstyle="light" data-size="sm">
@@ -149,6 +163,7 @@ include 'includes/topbar.php';
           </div>
 
           <div class="toggle-row">
+            <i class="bi bi-printer mr-2 text-secondary"></i>
             <input id="permSearch" type="checkbox"
                    data-toggle="toggle" data-on="ON" data-off="OFF"
                    data-onstyle="primary" data-offstyle="light" data-size="sm">
@@ -156,6 +171,7 @@ include 'includes/topbar.php';
           </div>
 
           <div class="toggle-row">
+            <i class="bi bi-water mr-2 text-secondary"></i>
             <input id="permAnalytics" type="checkbox" checked
                    data-toggle="toggle" data-on="ON" data-off="OFF"
                    data-onstyle="primary" data-offstyle="light" data-size="sm">
@@ -168,10 +184,12 @@ include 'includes/topbar.php';
         </div>
       </div>
 
-      <div class="modal-footer">
-        <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+          <i class="bi bi-x-circle mr-1"></i> Cancel
+        </button>
         <button type="button" class="btn btn-primary" id="createLink">
-          <i class="bi bi-magic"></i> Create link
+          <i class="bi bi-magic mr-1"></i> Create link
         </button>
       </div>
     </div>
