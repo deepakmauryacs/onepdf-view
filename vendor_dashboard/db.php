@@ -116,4 +116,24 @@ $mysqli->query("CREATE TABLE IF NOT EXISTS newsletter_subscribers (
     email VARCHAR(150) NOT NULL UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )");
+
+// Table for notifications
+$mysqli->query("CREATE TABLE IF NOT EXISTS notifications (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    user_id INT UNSIGNED NULL,
+    audience ENUM('user','all') NOT NULL DEFAULT 'user',
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    type ENUM('info','success','warning','error','system') DEFAULT 'info',
+    priority TINYINT UNSIGNED NOT NULL DEFAULT 1,
+    action_url VARCHAR(1024) DEFAULT NULL,
+    is_read TINYINT(1) NOT NULL DEFAULT 0,
+    read_at DATETIME DEFAULT NULL,
+    metadata JSON DEFAULT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_user_unread_created (audience, user_id, is_read, created_at),
+    KEY idx_created (created_at),
+    CONSTRAINT fk_notifications_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
 ?>
