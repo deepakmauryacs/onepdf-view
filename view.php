@@ -35,6 +35,12 @@ if (!empty($perms['analytics'])) {
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.css"/>
 
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon_io/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon_io/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon_io/favicon-16x16.png">
+<link rel="manifest" href="assets/favicon_io/site.webmanifest">
+<link rel="shortcut icon" href="assets/favicon_io/favicon.ico">
+
 <style>
   :root{
     --ui-bg:#111315; --ui-bar:#2b3034; --ui-bar-darker:#23272b;
