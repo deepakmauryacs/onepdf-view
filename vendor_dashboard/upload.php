@@ -78,8 +78,8 @@ include 'includes/topbar.php';
       <div id="dropArea" class="upload-drop text-center">
         <div class="cloud mb-2"><i class="bi bi-cloud-upload"></i></div>
         <div class="h5 mb-1">Drag & drop your files here or <span id="browseLink" class="browse">Browse</span></div>
-        <div class="muted">50 MB max file size • PDF & images supported</div>
-        <input id="fileInput" type="file" class="d-none" multiple accept="application/pdf,image/*">
+        <div class="muted">50 MB max file size • PDF files only</div>
+        <input id="fileInput" type="file" class="d-none" multiple accept="application/pdf">
       </div>
     </div>
   </div>
@@ -151,7 +151,6 @@ include 'includes/topbar.php';
   function extIcon(filename){
     const ext = (filename.split('.').pop() || '').toLowerCase();
     if (['pdf'].includes(ext)) return '<i class="bi bi-file-earmark-pdf text-danger"></i>';
-    if (['jpg','jpeg','png','gif','webp','bmp','svg'].includes(ext)) return '<i class="bi bi-file-image text-primary"></i>';
     return '<i class="bi bi-file-earmark"></i>';
   }
   function extBadge(filename){
@@ -188,10 +187,10 @@ include 'includes/topbar.php';
 
     // Validate and filter
     const valid = files.filter(f=>{
-      const typeOk = /^application\/pdf$/.test(f.type) || /^image\//.test(f.type);
+      const typeOk = /^application\/pdf$/.test(f.type);
       const sizeOk = f.size <= MAX_SIZE;
       if(!typeOk){
-        showAlert('Only PDF or image files are allowed: '+ f.name, 'danger');
+        showAlert('Only PDF files are allowed: ' + f.name, 'danger');
       }else if(!sizeOk){
         showAlert('File too large (max 50MB): ' + f.name, 'danger');
       }
