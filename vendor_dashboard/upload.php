@@ -212,6 +212,7 @@ include 'includes/topbar.php';
         data: fd,
         contentType: false,
         processData: false,
+        dataType: 'json',
         xhr: function(){
           const xhr = $.ajaxSettings.xhr();
           if(xhr.upload){
@@ -225,11 +226,14 @@ include 'includes/topbar.php';
           }
           return xhr;
         },
-        success: function(){
+        success: function(res){
           ui.bar.css('width','100%');
           ui.pct.text('100%');
           ui.done.removeClass('d-none');
           setTimeout(()=> { ui.row.fadeOut(300, function(){ $(this).remove(); if(!uploadList.children().length){ uploadingBox.addClass('d-none'); } }); }, 800);
+          if(res && res.url){
+            showAlert('Link generated: ' + res.url, 'success');
+          }
           loadFiles();
         },
         error: function(xhr){
@@ -284,6 +288,10 @@ include 'includes/topbar.php';
           </td>
         `);
         row.append(actions);
+        if(url){
+          actions.find('.generate').prop('disabled', true);
+          actions.find('.link-holder').html(`<code>${url}</code>`);
+        }
         filesTableBody.append(row);
       });
     }, 'json').fail(function(){

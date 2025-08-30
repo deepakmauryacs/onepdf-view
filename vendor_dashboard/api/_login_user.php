@@ -25,6 +25,8 @@ if ($user && password_verify($password, $user['password'])) {
     session_regenerate_id(true);
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['user_name'] = $user['first_name'];
+    // Store the user's unique folder id for uploads
+    $_SESSION['use_id'] = $user['use_id'];
     echo json_encode(['success' => true]);
 } else {
     echo json_encode(['error' => 'Invalid credentials']);
