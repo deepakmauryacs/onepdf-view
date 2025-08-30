@@ -42,7 +42,7 @@ if ($stmt->fetch()) {
         exit;
     }
 
-    $url = $scheme . $host . $basePath . '/file/' . $existingSlug;
+    $url = $scheme . $host . $basePath . '/view?doc=' . urlencode($existingSlug);
     echo json_encode(['url' => $url]);
     exit;
 }
@@ -50,7 +50,7 @@ $stmt->close();
 
 // No existing link: generate a new slug and insert a new row.
 $slug = bin2hex(random_bytes(5));
-$url  = $scheme . $host . $basePath . '/file/' . $slug;
+$url  = $scheme . $host . $basePath . '/view?doc=' . urlencode($slug);
 
 $stmt = $mysqli->prepare("INSERT INTO links (document_id, slug, permissions) VALUES (?,?,?)");
 $stmt->bind_param('iss', $id, $slug, $permJson);
