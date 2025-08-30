@@ -81,6 +81,7 @@ run($mysqli, "INSERT INTO plans (id, name, price, billing_cycle) VALUES
  ON DUPLICATE KEY UPDATE name=VALUES(name), price=VALUES(price), billing_cycle=VALUES(billing_cycle)", "Seed plans");
 
 // 3) USER_PLAN — use detected exact types for both FKs
+// 3) USER_PLAN — use detected exact types for both FKs (with status + timestamps)
 run($mysqli, "CREATE TABLE IF NOT EXISTS user_plan (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id $fkUserIdColDef NOT NULL,
@@ -88,6 +89,8 @@ run($mysqli, "CREATE TABLE IF NOT EXISTS user_plan (
     start_date DATE NOT NULL,
     end_date DATE DEFAULT NULL,
     status TINYINT(1) NOT NULL DEFAULT 1 COMMENT '1 = Active, 2 = Inactive',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     KEY idx_user (user_id),
     KEY idx_plan (plan_id),
     CONSTRAINT fk_user_plan_user FOREIGN KEY (user_id) REFERENCES users(id)
@@ -95,6 +98,7 @@ run($mysqli, "CREATE TABLE IF NOT EXISTS user_plan (
     CONSTRAINT fk_user_plan_plan FOREIGN KEY (plan_id) REFERENCES plans(id)
       ON DELETE RESTRICT ON UPDATE CASCADE
 ) $tblOpts", "Create user_plan");
+
 
 // 4) DOCUMENTS (FK → users)
 run($mysqli, "CREATE TABLE IF NOT EXISTS documents (
