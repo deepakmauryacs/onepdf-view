@@ -1,15 +1,27 @@
 <?php
 require_once __DIR__ . '/../../config.php';
 
+$userId = $_SESSION['user_id'] ?? null;
 $id = $_POST['id'] ?? null;
 // Allow optional permissions.  If none are provided default to an empty JSON
 // object so links can still be generated and later viewed.
 $permJson = $_POST['permissions'] ?? '{}';
-if (!$id) {
+if (!$userId || !$id) {
     http_response_code(400);
     echo json_encode(['error' => 'Missing parameters']);
     exit;
 }
+
+// Ensure the document belongs to the user
+$own = $mysqli->prepare('SELECT 1 FROM documents WHERE id = ? AND user_id = ?');
+$own->bind_param('ii', $id, $userId);
+$own->execute();
+if ($own->get_result()->num_rows === 0) {
+    http_response_code(403);
+    echo json_encode(['error' => 'Unauthorized']);
+    exit;
+}
+$own->close();
 
 $perms = json_decode($permJson, true);
 if ($perms === null) {

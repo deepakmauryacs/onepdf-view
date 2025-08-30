@@ -1,6 +1,14 @@
 <?php
 require_once __DIR__ . '/../../config.php';
 
+// Ensure the user is logged in
+$userId = $_SESSION['user_id'] ?? null;
+if (!$userId) {
+    http_response_code(401);
+    echo json_encode(['error' => 'Unauthorized']);
+    exit;
+}
+
 // Support uploads sent as either `file` or `pdf`
 $key = isset($_FILES['file']) ? 'file' : (isset($_FILES['pdf']) ? 'pdf' : null);
 if ($key === null) {
@@ -34,7 +42,24 @@ if ($file['size'] > $maxSize) {
     exit;
 }
 
-$uploadDir = dirname(__DIR__, 2) . '/uploads/';
+// Determine user's folder based on use_id
+$useId = $_SESSION['use_id'] ?? null;
+if (!$useId) {
+    $stmt = $mysqli->prepare('SELECT use_id FROM users WHERE id = ?');
+    $stmt->bind_param('i', $userId);
+    $stmt->execute();
+    $stmt->bind_result($useId);
+    $stmt->fetch();
+    $stmt->close();
+    if (!$useId) {
+        http_response_code(500);
+        echo json_encode(['error' => 'User folder not found']);
+        exit;
+    }
+    $_SESSION['use_id'] = $useId;
+}
+
+$uploadDir = dirname(__DIR__, 2) . '/uploads/' . $useId . '/';
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0777, true);
 }
@@ -60,9 +85,24 @@ if (!move_uploaded_file($file['tmp_name'], $target)) {
 }
 chmod($target, 0644);
 
-$stmt = $mysqli->prepare("INSERT INTO documents (filename, filepath, size) VALUES (?,?,?)");
-$relative = 'uploads/' . $storedName;
-$stmt->bind_param('ssi', $sanitizedName, $relative, $file['size']);
+// Record document in database
+$relative = 'uploads/' . $useId . '/' . $storedName;
+$stmt = $mysqli->prepare("INSERT INTO documents (user_id, filename, filepath, size) VALUES (?,?,?,?)");
+$stmt->bind_param('issi', $userId, $sanitizedName, $relative, $file['size']);
 $stmt->execute();
+$docId = $stmt->insert_id;
+$stmt->close();
 
-echo json_encode(['success' => true]);
+// Generate link immediately
+$slug = bin2hex(random_bytes(5));
+$stmt = $mysqli->prepare("INSERT INTO links (document_id, slug, permissions) VALUES (?, ?, '{}')");
+$stmt->bind_param('is', $docId, $slug);
+$stmt->execute();
+$stmt->close();
+
+$scheme   = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+$host     = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$basePath = rtrim(dirname(dirname(dirname($_SERVER['SCRIPT_NAME'] ?? ''))), '/');
+$url      = $scheme . $host . $basePath . '/view?doc=' . urlencode($slug);
+
+echo json_encode(['success' => true, 'url' => $url]);

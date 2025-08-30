@@ -29,11 +29,20 @@ $mysqli->query("CREATE TABLE IF NOT EXISTS users (
 // Table for uploaded documents
 $mysqli->query("CREATE TABLE IF NOT EXISTS documents (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
     filename VARCHAR(255) NOT NULL,
     filepath VARCHAR(255) NOT NULL,
     size BIGINT NOT NULL,
-    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 )");
+
+// Ensure user_id column exists for older installations
+$colResDocs = $mysqli->query("SHOW COLUMNS FROM documents LIKE 'user_id'");
+if ($colResDocs && $colResDocs->num_rows === 0) {
+    $mysqli->query("ALTER TABLE documents ADD COLUMN user_id INT NOT NULL AFTER id");
+    $mysqli->query("ALTER TABLE documents ADD FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE");
+}
 
 // Table for generated links
 $mysqli->query("CREATE TABLE IF NOT EXISTS links (
