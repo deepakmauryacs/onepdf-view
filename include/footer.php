@@ -15,18 +15,18 @@
         <div class="col-6 col-lg-2">
           <h6 class="mb-4">Quick links</h6>
           <ul>
-            <li><a href="/#features">Features</a></li>
-            <li><a href="/#pricing">Pricing</a></li>
-            <li><a href="/docs">How It Works</a></li>
+            <li><a href="features">Features</a></li>
+            <li><a href="pricing">Pricing</a></li>
+            <li><a href="how-it-works">How It Works</a></li>
           </ul>
         </div>
         
         <div class="col-6 col-lg-2">
           <h6 class="mb-4">Contact Us</h6>
           <ul>
-            <li><a href="/contact">Contact</a></li>
+            <li><a href="contact">Contact</a></li>
             <li><a href="javascript:void(0)">Partnerships</a></li>
-            <li><a href="/contact">General Inquiry</a></li>
+            <li><a href="contact">General Inquiry</a></li>
           </ul>
         </div>
         <div class="col-6 col-lg-3">
@@ -43,11 +43,9 @@
       <div class="footer-bottom">
         <p class="copyright">© <span id="y"></span> PDFOneLink. All rights reserved.</p>
         <div class="legal-links">
-          <a href="/privacy.php">Privacy Policy</a>
+          <a href="privacy.php">Privacy Policy</a>
           <span class="divider">•</span>
-          <a href="/terms.php">Terms of Service</a>
-          <span class="divider">•</span>
-          <a href="/cookies">Cookie Policy</a>
+          <a href="terms.php">Terms of Service</a>
         </div>
       </div>
     </div>

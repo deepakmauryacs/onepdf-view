@@ -292,8 +292,8 @@ include 'include/header.php';
                     <h2 class="mb-4">Ready to get started?</h2>
                     <p class="text-muted mb-4">Join thousands of professionals who trust PDFOneLink with their document sharing needs.</p>
                     <div class="d-flex justify-content-center gap-3 flex-wrap">
-                        <a href="/register" class="btn btn-brand btn-lg">Start free trial</a>
-                        <a href="/contact" class="btn btn-ghost btn-lg">Contact sales</a>
+                        <a href="register" class="btn btn-brand btn-lg">Start free trial</a>
+                        <a href="contact" class="btn btn-ghost btn-lg">Contact sales</a>
                     </div>
                     <p class="text-muted small mt-3">No credit card required. Try all features free for 14 days.</p>
                 </div>

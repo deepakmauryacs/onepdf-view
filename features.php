@@ -385,8 +385,8 @@ include 'include/header.php';
                     <h2 class="mb-4">Ready to try PDFOneLink?</h2>
                     <p class="text-muted mb-4">Start sharing your PDFs securely today. No credit card required.</p>
                     <div class="d-flex justify-content-center gap-3 flex-wrap">
-                        <a href="#" class="btn btn-brand btn-lg">Get Started for Free</a>
-                        <a href="#" class="btn btn-ghost btn-lg">Schedule a Demo</a>
+                        <a href="registration" class="btn btn-brand btn-lg">Get Started for Free</a>
+                        <a href="javascript:void(0)" class="btn btn-ghost btn-lg">Schedule a Demo</a>
                     </div>
                 </div>
             </div>
