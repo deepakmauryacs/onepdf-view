@@ -1,3 +1,30 @@
+<?php
+$userId = $_SESSION['user_id'] ?? 0;
+$notifications = [];
+$unreadCount = 0;
+
+if ($userId) {
+    $stmt = $mysqli->prepare("SELECT id, title, message, type, action_url, created_at, is_read FROM notifications WHERE (audience='all' OR (audience='user' AND user_id=?)) ORDER BY created_at DESC LIMIT 5");
+    $stmt->bind_param('i', $userId);
+    $stmt->execute();
+    $notifications = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    $stmt->close();
+
+    $stmt = $mysqli->prepare("SELECT COUNT(*) AS cnt FROM notifications WHERE (audience='all' OR (audience='user' AND user_id=?)) AND is_read=0");
+    $stmt->bind_param('i', $userId);
+    $stmt->execute();
+    $unreadCount = $stmt->get_result()->fetch_assoc()['cnt'] ?? 0;
+    $stmt->close();
+}
+
+$typeIcons = [
+    'info'    => ['bi-info-circle', 'bg-primary'],
+    'success' => ['bi-check-circle', 'bg-success'],
+    'warning' => ['bi-exclamation-triangle', 'bg-warning'],
+    'error'   => ['bi-x-circle', 'bg-danger'],
+    'system'  => ['bi-gear', 'bg-secondary']
+];
+?>
 <!-- Content Wrapper -->
 <div id="content-wrapper" class="d-flex flex-column">
 <!-- Main Content -->
@@ -44,8 +71,9 @@
                 <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="bi bi-bell"></i>
-                    <!-- Counter - Alerts -->
-                    <span class="badge badge-danger badge-counter">3+</span>
+                    <?php if ($unreadCount > 0): ?>
+                        <span class="badge badge-danger badge-counter"><?php echo $unreadCount; ?></span>
+                    <?php endif; ?>
                 </a>
                 <!-- Dropdown - Alerts -->
                 <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -53,40 +81,26 @@
                     <h6 class="dropdown-header">
                         Alerts Center
                     </h6>
-                    <a class="dropdown-item d-flex align-items-center" href="#">
-                        <div class="mr-3">
-                            <div class="icon-circle bg-primary">
-                                <i class="bi bi-file-earmark-text text-white"></i>
+                    <?php if (empty($notifications)): ?>
+                        <span class="dropdown-item text-center small text-gray-500">No notifications</span>
+                    <?php else: ?>
+                        <?php foreach ($notifications as $note): 
+                            $icon = $typeIcons[$note['type']] ?? $typeIcons['info'];
+                        ?>
+                        <a class="dropdown-item d-flex align-items-center" href="<?php echo htmlspecialchars($note['action_url'] ?? '#'); ?>">
+                            <div class="mr-3">
+                                <div class="icon-circle <?php echo $icon[1]; ?>">
+                                    <i class="bi <?php echo $icon[0]; ?> text-white"></i>
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <div class="small text-gray-500">December 12, 2019</div>
-                            <span class="font-weight-bold">A new monthly report is ready to download!</span>
-                        </div>
-                    </a>
-                    <a class="dropdown-item d-flex align-items-center" href="#">
-                        <div class="mr-3">
-                            <div class="icon-circle bg-success">
-                                <i class="bi bi-cash-coin text-white"></i>
+                            <div>
+                                <div class="small text-gray-500"><?php echo date('F j, Y', strtotime($note['created_at'])); ?></div>
+                                <span class="<?php echo $note['is_read'] ? '' : 'font-weight-bold'; ?>"><?php echo htmlspecialchars($note['title']); ?></span>
                             </div>
-                        </div>
-                        <div>
-                            <div class="small text-gray-500">December 7, 2019</div>
-                            $290.29 has been deposited into your account!
-                        </div>
-                    </a>
-                    <a class="dropdown-item d-flex align-items-center" href="#">
-                        <div class="mr-3">
-                            <div class="icon-circle bg-warning">
-                                <i class="bi bi-exclamation-triangle text-white"></i>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="small text-gray-500">December 2, 2019</div>
-                            Spending Alert: We've noticed unusually high spending for your account.
-                        </div>
-                    </a>
-                    <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                        </a>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                    <a class="dropdown-item text-center small text-gray-500" href="notifications.php">Show All Alerts</a>
                 </div>
             </li>
 
