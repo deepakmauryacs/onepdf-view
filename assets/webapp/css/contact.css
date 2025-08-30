@@ -161,6 +161,17 @@
             margin-bottom: 0.5rem;
             color: var(--text);
         }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875em;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .is-invalid + .error-message {
+            display: block;
+        }
         
         .faq-section {
             background: var(--lighter);
