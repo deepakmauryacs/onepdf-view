@@ -40,50 +40,88 @@ include 'includes/topbar.php';
             <?php else: ?>
                 <p>You are currently on the <strong>Free</strong> plan.</p>
             <?php endif; ?>
-            <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#upgradeModal"><i class="bi bi-arrow-up-circle mr-1"></i> Upgrade Plan</button>
+            <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#upgradeModal">
+                <i class="bi bi-arrow-up-circle mr-1"></i> Upgrade Plan
+            </button>
         </div>
     </div>
 </div>
 
-<!-- Upgrade Plan Modal -->
+<!-- Upgrade Plan Modal (Bootstrap 4 compatible) -->
 <div class="modal fade" id="upgradeModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Select Plan</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="planForm">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="planSelect">Available Plans</label>
-                        <select class="form-control" id="planSelect" name="plan_id" required>
-                            <option value="">Select a plan</option>
-                            <?php foreach ($available_plans as $p): ?>
-                                <option value="<?php echo htmlspecialchars($p['id']); ?>">
-                                    <?php echo htmlspecialchars($p['name'] . ' - $' . $p['price'] . ' / ' . $p['billing_cycle']); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" id="btnPlanSave" class="btn btn-primary">Save</button>
-                </div>
-            </form>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content shadow-lg border-0 rounded-lg">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title mb-0">
+          <i class="bi bi-box-seam mr-2"></i> Upgrade Your Plan
+        </h5>
+        <!-- BS4 close button -->
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <form id="planForm">
+        <div class="modal-body">
+          <p class="text-muted mb-3">
+            <i class="bi bi-lightning-charge-fill text-warning mr-1"></i>
+            Choose a plan that suits your needs.
+          </p>
+
+          <div class="form-group mb-3">
+            <label for="planSelect" class="font-weight-bold">
+              <i class="bi bi-gem text-info mr-1"></i> Available Plans
+            </label>
+            <!-- BS4 uses form-control (not form-select) -->
+            <select class="form-control shadow-sm" id="planSelect" name="plan_id" required>
+              <option value="">-- Select a plan --</option>
+              <?php foreach ($available_plans as $p): ?>
+                <option value="<?php echo htmlspecialchars($p['id']); ?>">
+                  <?php echo htmlspecialchars($p['name'] . ' - $' . $p['price'] . ' / ' . $p['billing_cycle']); ?>
+                </option>
+              <?php endforeach; ?>
+            </select>
+          </div>
         </div>
+
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+            <i class="bi bi-x-circle mr-1"></i> Cancel
+          </button>
+          <button type="submit" id="btnPlanSave" class="btn btn-primary">
+            <i class="bi bi-check-circle mr-1"></i> Save & Upgrade
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
 </div>
+
+<style>
+/* === Upgrade Plan Modal Custom Styles (BS4 friendly) === */
+.rounded-lg { border-radius: 16px !important; } /* helper for BS4 */
+.modal-content { overflow: hidden; }
+.modal-header { border-bottom: none; padding: 1rem 1.5rem; }
+.modal-title { font-weight: 600; font-size: 1.1rem; }
+.modal-body { padding: 1.5rem; }
+.modal-footer { border-top: none; padding: 1rem 1.5rem; }
+#planSelect { border-radius: 10px; padding: 0.6rem 1rem; font-size: 0.95rem; }
+#planSelect option { padding: 0.4rem; }
+.btn-primary { border-radius: 8px; font-weight: 600; }
+.btn-outline-secondary { border-radius: 8px; font-weight: 500; }
+.btn-primary:hover { background-color: #0056d2; }
+.btn-outline-secondary:hover { background-color: #f1f1f1; }
+.modal-title i, label i, .btn i { vertical-align: middle; }
+</style>
 
 <script>
 $(function(){
     $('#planForm').on('submit', function(e){
         e.preventDefault();
         var btn = $('#btnPlanSave');
-        btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span>Saving...');
+        btn.prop('disabled', true).html(
+          '<span class="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span>Saving...'
+        );
         $.ajax({
             url: 'api/_update_plan.php',
             method: 'POST',
@@ -98,7 +136,7 @@ $(function(){
         }).fail(function(){
             alert('Network error. Please try again.');
         }).always(function(){
-            btn.prop('disabled', false).html('Save');
+            btn.prop('disabled', false).html('<i class="bi bi-check-circle mr-1"></i> Save & Upgrade');
         });
     });
 });

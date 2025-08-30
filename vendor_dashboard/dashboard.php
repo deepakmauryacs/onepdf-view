@@ -20,17 +20,20 @@ include 'includes/topbar.php';
   .mf-header{ display:flex; align-items:center; gap:12px; justify-content:flex-start; }
   .mf-left{ flex:0 0 auto; }
   .mf-actions{ flex:1 1 auto; display:flex; align-items:center; gap:12px; flex-wrap:nowrap; margin-left:auto; }
-  .mf-search.input-group{ flex:1 1 auto; min-width:260px; max-width:none; }
-  .mf-search.input-group > .input-group-prepend .input-group-text{
-    background:#fff; height:40px; padding:.45rem .70rem;
-    border-top-left-radius:10px !important; border-bottom-left-radius:10px !important;
-    border-right:0 !important; display:flex; align-items:center;
+
+  /* --- Clean Search (icon inside input) --- */
+  .mf-search{ flex:1 1 auto; min-width:260px; max-width:none; position:relative; }
+  .mf-search .mf-search-input{
+    height:40px; padding:.45rem .75rem .45rem 2.1rem;
+    border-radius:10px; box-shadow:none !important;
+    border:1px solid #e5e7eb; background:#fff;
   }
-  .mf-search.input-group > .form-control{
-    height:40px; padding:.45rem .75rem;
-    border-top-right-radius:10px !important; border-bottom-right-radius:10px !important;
-    border-left:0 !important; box-shadow:none !important;
+  .mf-search .mf-search-input:focus{ border-color:#cbd5e1; }
+  .mf-search .mf-search-icon{
+    position:absolute; left:10px; top:50%; transform:translateY(-50%);
+    pointer-events:none; color:#6b7280; font-size:14px;
   }
+
   .mf-actions .btn{
     height:40px; padding:0 .9rem; border-radius:10px;
     display:inline-flex; align-items:center; gap:.35rem; line-height:1;
@@ -39,10 +42,11 @@ include 'includes/topbar.php';
   .btn-icon{ display:inline-flex; align-items:center; gap:.35rem; }
   .empty{ padding:32px; text-align:center; color:#6b7280; border-top:1px dashed #e5e7eb; border-bottom-left-radius:12px; border-bottom-right-radius:12px; }
   .card-header{ padding:.85rem 1.1rem; }
+
   @media (max-width: 768px){
     .mf-header{ flex-wrap:wrap; }
     .mf-actions{ width:100%; margin-left:0; }
-    .mf-search.input-group{ min-width:0; }
+    .mf-search{ min-width:0; }
   }
 
   /* ---- Modern Permissions Modal ---- */
@@ -57,7 +61,7 @@ include 'includes/topbar.php';
   .perm-hero .shield{ width:60px; height:60px; border-radius:16px; background:#eef2ff; display:grid; place-items:center; }
   .perm-hero .shield i{ font-size:28px; color:#3b82f6; }
   .toggle-list{ display:grid; gap:16px; margin-top:6px; }
-  .toggle-row{ display:flex; align-items-center; gap:12px; }
+  .toggle-row{ display:flex; align-items:center; gap:12px; }
   .toggle-text .title{ font-weight:600; color:#1f2937; }
   .toggle-text .sub{ font-size:.875rem; color:#6b7280; margin-top:2px; }
   .toggle-row .label-inline{ margin-left:8px; font-weight:600; color:#1f2937; }
@@ -76,19 +80,22 @@ include 'includes/topbar.php';
           <span class="font-weight-bold">Files</span>
           <span class="badge badge-primary ml-1" id="countBadge">0</span>
         </div>
+
         <div class="mf-actions">
-          <div class="input-group mf-search">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="bi bi-search"></i></span>
-            </div>
-            <input id="searchInput" type="text" class="form-control" placeholder="Search files..." autocomplete="off">
+          <!-- ✅ Fixed search — no input-group -->
+          <div class="mf-search">
+            <i class="bi bi-search mf-search-icon"></i>
+            <input id="searchInput" type="text" class="form-control mf-search-input"
+                   placeholder="Search files..." autocomplete="off">
           </div>
+
           <button id="bulkDelete" class="btn btn-outline-danger" disabled>
             <i class="bi bi-trash"></i> Delete selected
           </button>
         </div>
       </div>
     </div>
+
     <div class="table-responsive">
       <table class="table mb-0" id="filesTable">
         <thead>
@@ -133,9 +140,7 @@ include 'includes/topbar.php';
           </div>
         </div>
 
-        <!-- Bootstrap Toggle switches -->
         <div class="toggle-list">
-
           <div class="toggle-row">
             <input id="permDownload" type="checkbox" checked
                    data-toggle="toggle" data-on="ON" data-off="OFF"
@@ -157,7 +162,6 @@ include 'includes/topbar.php';
             <span class="label-inline">Add watermark</span>
           </div>
 
-          <!-- Helper text under list -->
           <div class="toggle-text">
             <div class="sub mt-2">These settings apply to the generated link only.</div>
           </div>
@@ -176,7 +180,6 @@ include 'includes/topbar.php';
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Bootstrap Toggle (ON/OFF pill switches) -->
 <link href="https://cdn.jsdelivr.net/gh/minhur/bootstrap-toggle@2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/gh/minhur/bootstrap-toggle@2.2.2/js/bootstrap-toggle.min.js"></script>
 
@@ -190,7 +193,7 @@ include 'includes/topbar.php';
   let genBtn = null;
   let linkHolder = null;
 
-  // Initialize toggles when modal opens (ensures correct rendering every time)
+  // Initialize toggles when modal opens
   $('#permModal').on('shown.bs.modal', function(){
     $('#permDownload, #permSearch, #permAnalytics').bootstrapToggle('destroy').bootstrapToggle();
   });
@@ -305,10 +308,9 @@ include 'includes/topbar.php';
   $('#createLink').on('click', function(){
     const id = $('#permModal').data('id');
     const perms = {
-      // IDs unchanged; Bootstrap Toggle sets the same underlying checkbox
       download:  $('#permDownload').prop('checked'),
-      search:    $('#permSearch').prop('checked'),      // UI label: Allow printing
-      analytics: $('#permAnalytics').prop('checked')    // UI label: Add watermark
+      search:    $('#permSearch').prop('checked'),  // Allow printing
+      analytics: $('#permAnalytics').prop('checked') // Add watermark
     };
     $('#permModal').modal('hide');
     genBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm mr-1"></span>Generating');
@@ -362,7 +364,11 @@ include 'includes/topbar.php';
     if(!confirm('Delete '+ids.length+' selected file(s)?')) return;
     let done=0, failed=0;
     const next = () => {
-      if(!ids.length){ loadFiles(); showAlert((failed? failed+' failed, ' : '')+done+' deleted.', failed?'danger':'success'); return; }
+      if(!ids.length){
+        loadFiles();
+        showAlert((failed? failed+' failed, ' : '')+done+' deleted.', failed?'danger':'success');
+        return;
+      }
       const id = ids.pop();
       $.post('api/delete_file.php', { id })
         .done(()=>{ done++; next(); })
