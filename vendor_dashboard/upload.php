@@ -231,8 +231,8 @@ include 'includes/topbar.php';
           ui.pct.text('100%');
           ui.done.removeClass('d-none');
           setTimeout(()=> { ui.row.fadeOut(300, function(){ $(this).remove(); if(!uploadList.children().length){ uploadingBox.addClass('d-none'); } }); }, 800);
-          if(res && res.url){
-            showAlert('Link generated: ' + res.url, 'success');
+          if(res && res.success){
+            showAlert('File uploaded successfully.', 'success');
           }
           loadFiles();
         },
