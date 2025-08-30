@@ -42,7 +42,7 @@
         <div class="col-lg-3">
           <h6 class="mb-4">Newsletter</h6>
           <p class="small mb-3">Get the latest updates, tips, and guides.</p>
-          <form id="newsletterForm" class="d-flex gap-2 mb-2" action="/subscribe" method="post" novalidate>
+          <form id="newsletterForm" class="d-flex gap-2 mb-2" action="/subscribe.php" method="post" novalidate>
             <input type="email" class="form-control form-control-sm" name="email" placeholder="Email address" required>
             <button class="btn btn-brand btn-sm" type="submit"><i class="bi bi-arrow-right"></i></button>
           </form>
