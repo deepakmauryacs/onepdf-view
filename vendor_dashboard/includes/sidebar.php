@@ -12,6 +12,7 @@ $menu = [
         ]
     ],
     ['title' => 'Analytics', 'icon' => 'bi-graph-up', 'url' => 'analytics'],
+    ['title' => 'Plan', 'icon' => 'bi-gem', 'url' => 'plan'],
     [
         'title' => 'Setting',
         'icon'  => 'bi-gear',
