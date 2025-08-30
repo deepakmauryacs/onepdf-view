@@ -93,16 +93,4 @@ $stmt->execute();
 $docId = $stmt->insert_id;
 $stmt->close();
 
-// Generate link immediately
-$slug = bin2hex(random_bytes(5));
-$stmt = $mysqli->prepare("INSERT INTO links (document_id, slug, permissions) VALUES (?, ?, '{}')");
-$stmt->bind_param('is', $docId, $slug);
-$stmt->execute();
-$stmt->close();
-
-$scheme   = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
-$host     = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$basePath = rtrim(dirname(dirname(dirname($_SERVER['SCRIPT_NAME'] ?? ''))), '/');
-$url      = $scheme . $host . $basePath . '/view?doc=' . urlencode($slug);
-
-echo json_encode(['success' => true, 'url' => $url]);
+echo json_encode(['success' => true, 'id' => $docId]);
