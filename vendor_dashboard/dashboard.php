@@ -130,6 +130,40 @@ include(INCLUDE_PATH . 'topbar.php');
                 </div>
             </div>
 
+            <!-- User Documents -->
+            <h2 class="h5 mb-4">Your Documents</h2>
+            <div class="row">
+            <?php
+            $docs = [];
+            if (isset($mysqli)) {
+                $stmt = $mysqli->prepare("SELECT id, filename FROM documents WHERE user_id = ? ORDER BY uploaded_at DESC");
+                $stmt->bind_param('i', $_SESSION['user_id']);
+                $stmt->execute();
+                $res = $stmt->get_result();
+                $docs = $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
+                $stmt->close();
+            }
+            if ($docs):
+                foreach ($docs as $doc):
+            ?>
+                <div class="col-md-3 mb-4">
+                    <a href="document.php?id=<?php echo $doc['id']; ?>" class="card shadow-sm text-center h-100">
+                        <div class="card-body d-flex flex-column justify-content-center">
+                            <i class="fas fa-file-pdf fa-2x text-danger mb-2"></i>
+                            <div class="small"><?php echo htmlspecialchars($doc['filename']); ?></div>
+                        </div>
+                    </a>
+                </div>
+            <?php
+                endforeach;
+            else:
+            ?>
+                <div class="col-12">
+                    <p class="text-muted">No documents uploaded yet.</p>
+                </div>
+            <?php endif; ?>
+            </div>
+
             <!-- Content Row -->
 
             <div class="row">
