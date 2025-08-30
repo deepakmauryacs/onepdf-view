@@ -120,7 +120,7 @@ $mysqli->query("CREATE TABLE IF NOT EXISTS newsletter_subscribers (
 // Table for notifications
 $mysqli->query("CREATE TABLE IF NOT EXISTS notifications (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    user_id INT UNSIGNED NULL,
+    user_id INT NULL,
     audience ENUM('user','all') NOT NULL DEFAULT 'user',
     title VARCHAR(255) NOT NULL,
     message TEXT NOT NULL,
