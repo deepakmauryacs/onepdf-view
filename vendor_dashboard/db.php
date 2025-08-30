@@ -26,7 +26,7 @@ function getOne($mysqli, $sql){
 
 $tblOpts = " ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ";
 
-// 1) Ensure users table exists (use a sane default). Then normalize engine if needed.
+// 1) Ensure USERS exists (default unsigned id) and engine is InnoDB
 run($mysqli, "CREATE TABLE IF NOT EXISTS users (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     use_id CHAR(16) NOT NULL,
@@ -39,20 +39,19 @@ run($mysqli, "CREATE TABLE IF NOT EXISTS users (
     agreed_terms TINYINT(1) NOT NULL DEFAULT 0
 ) $tblOpts", "Create users");
 
-// If users was created in the past with MyISAM or something else, convert to InnoDB now.
 $usersEngine = getOne($mysqli, "SELECT ENGINE FROM INFORMATION_SCHEMA.TABLES
   WHERE TABLE_SCHEMA='".$mysqli->real_escape_string($db)."' AND TABLE_NAME='users' LIMIT 1");
 if ($usersEngine && strtoupper($usersEngine) !== 'INNODB') {
     run($mysqli, "ALTER TABLE users ENGINE=InnoDB", "Convert users to InnoDB");
 }
 
-// 2) Detect EXACT type of users.id (e.g., 'int(11)', 'int(11) unsigned', 'bigint(20) unsigned')
+// Detect EXACT type for users.id (e.g., 'int(10) unsigned', 'bigint(20) unsigned', etc.)
 $fkUserIdColDef = getOne($mysqli, "SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS
   WHERE TABLE_SCHEMA='".$mysqli->real_escape_string($db)."'
     AND TABLE_NAME='users' AND COLUMN_NAME='id' LIMIT 1");
 $fkUserIdColDef = $fkUserIdColDef ? strtoupper($fkUserIdColDef) : 'INT UNSIGNED';
 
-// 3) Other core tables (plans, user_plan, documents, links, analytics, contact, newsletter)
+// 2) Ensure PLANS exists and engine is InnoDB
 run($mysqli, "CREATE TABLE IF NOT EXISTS plans (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -60,6 +59,19 @@ run($mysqli, "CREATE TABLE IF NOT EXISTS plans (
     billing_cycle VARCHAR(20) NOT NULL
 ) $tblOpts", "Create plans");
 
+$plansEngine = getOne($mysqli, "SELECT ENGINE FROM INFORMATION_SCHEMA.TABLES
+  WHERE TABLE_SCHEMA='".$mysqli->real_escape_string($db)."' AND TABLE_NAME='plans' LIMIT 1");
+if ($plansEngine && strtoupper($plansEngine) !== 'INNODB') {
+    run($mysqli, "ALTER TABLE plans ENGINE=InnoDB", "Convert plans to InnoDB");
+}
+
+// Detect EXACT type for plans.id (handles legacy signed/unsigned/int/bigint)
+$fkPlanIdColDef = getOne($mysqli, "SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS
+  WHERE TABLE_SCHEMA='".$mysqli->real_escape_string($db)."'
+    AND TABLE_NAME='plans' AND COLUMN_NAME='id' LIMIT 1");
+$fkPlanIdColDef = $fkPlanIdColDef ? strtoupper($fkPlanIdColDef) : 'INT';
+
+// Seed plans
 run($mysqli, "INSERT INTO plans (id, name, price, billing_cycle) VALUES
  (1,'Free',0.00,'free'),
  (2,'Pro',12.00,'month'),
@@ -68,12 +80,14 @@ run($mysqli, "INSERT INTO plans (id, name, price, billing_cycle) VALUES
  (5,'Business',1999.00,'year')
  ON DUPLICATE KEY UPDATE name=VALUES(name), price=VALUES(price), billing_cycle=VALUES(billing_cycle)", "Seed plans");
 
+// 3) USER_PLAN — use detected exact types for both FKs
 run($mysqli, "CREATE TABLE IF NOT EXISTS user_plan (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id $fkUserIdColDef NOT NULL,
-    plan_id INT NOT NULL,
+    plan_id $fkPlanIdColDef NOT NULL,
     start_date DATE NOT NULL,
     end_date DATE DEFAULT NULL,
+    status TINYINT(1) NOT NULL DEFAULT 1 COMMENT '1 = Active, 2 = Inactive',
     KEY idx_user (user_id),
     KEY idx_plan (plan_id),
     CONSTRAINT fk_user_plan_user FOREIGN KEY (user_id) REFERENCES users(id)
@@ -82,6 +96,7 @@ run($mysqli, "CREATE TABLE IF NOT EXISTS user_plan (
       ON DELETE RESTRICT ON UPDATE CASCADE
 ) $tblOpts", "Create user_plan");
 
+// 4) DOCUMENTS (FK → users)
 run($mysqli, "CREATE TABLE IF NOT EXISTS documents (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id $fkUserIdColDef NOT NULL,
@@ -103,6 +118,7 @@ if (!$col) {
       ON DELETE CASCADE ON UPDATE CASCADE", "Alter documents add fk");
 }
 
+// 5) LINKS (FK → documents)
 run($mysqli, "CREATE TABLE IF NOT EXISTS links (
     id INT AUTO_INCREMENT PRIMARY KEY,
     document_id INT NOT NULL,
@@ -114,6 +130,7 @@ run($mysqli, "CREATE TABLE IF NOT EXISTS links (
       ON DELETE CASCADE ON UPDATE CASCADE
 ) $tblOpts", "Create links");
 
+// 6) LINK ANALYTICS (FK → links)
 run($mysqli, "CREATE TABLE IF NOT EXISTS link_analytics (
     id INT AUTO_INCREMENT PRIMARY KEY,
     link_id INT NOT NULL,
@@ -124,6 +141,7 @@ run($mysqli, "CREATE TABLE IF NOT EXISTS link_analytics (
       ON DELETE CASCADE ON UPDATE CASCADE
 ) $tblOpts", "Create link_analytics");
 
+// 7) CONTACT & NEWSLETTER (no FKs)
 run($mysqli, "CREATE TABLE IF NOT EXISTS contact_messages (
     id INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,
@@ -141,7 +159,7 @@ run($mysqli, "CREATE TABLE IF NOT EXISTS newsletter_subscribers (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) $tblOpts", "Create newsletter_subscribers");
 
-// 4) Recreate notifications with a PERFECTLY matching FK column type
+// 8) NOTIFICATIONS (FK → users) — drop & recreate to avoid partial schema
 run($mysqli, "DROP TABLE IF EXISTS notifications", "Drop notifications (if exists)");
 run($mysqli, "CREATE TABLE notifications (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -162,10 +180,7 @@ run($mysqli, "CREATE TABLE notifications (
     KEY idx_user (user_id)
 ) $tblOpts", "Create notifications (no FK yet)");
 
-// Add the FK separately so if it fails, you see exactly why.
 run($mysqli, "ALTER TABLE notifications
     ADD CONSTRAINT fk_notifications_user
     FOREIGN KEY (user_id) REFERENCES users(id)
     ON DELETE CASCADE ON UPDATE CASCADE", "Add FK notifications->users");
-
-
