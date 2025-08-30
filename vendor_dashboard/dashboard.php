@@ -7,6 +7,37 @@ if (!isset($_SESSION['user_id'])) {
 // Define the base path for includes
 define('INCLUDE_PATH', __DIR__ . '/includes/');
 
+// ---------------------------------------------------------------------
+// Basic statistics for the dashboard
+// ---------------------------------------------------------------------
+$totalFiles = $totalLinks = $totalViews = $totalUsers = 0;
+
+if (isset($mysqli)) {
+    // Total uploaded documents
+    if ($res = $mysqli->query("SELECT COUNT(*) AS cnt FROM documents")) {
+        $row = $res->fetch_assoc();
+        $totalFiles = (int)$row['cnt'];
+    }
+
+    // Total generated links
+    if ($res = $mysqli->query("SELECT COUNT(*) AS cnt FROM links")) {
+        $row = $res->fetch_assoc();
+        $totalLinks = (int)$row['cnt'];
+    }
+
+    // Total recorded link views
+    if ($res = $mysqli->query("SELECT COUNT(*) AS cnt FROM link_analytics")) {
+        $row = $res->fetch_assoc();
+        $totalViews = (int)$row['cnt'];
+    }
+
+    // Total registered users
+    if ($res = $mysqli->query("SELECT COUNT(*) AS cnt FROM users")) {
+        $row = $res->fetch_assoc();
+        $totalUsers = (int)$row['cnt'];
+    }
+}
+
 // Include the header
 include(INCLUDE_PATH . 'header.php');
 
@@ -30,83 +61,68 @@ include(INCLUDE_PATH . 'topbar.php');
             <!-- Content Row -->
             <div class="row">
 
-                <!-- Earnings (Monthly) Card Example -->
+                <!-- Total Files Card -->
                 <div class="col-xl-3 col-md-6 mb-4">
                     <div class="card border-left-primary shadow h-100 py-2">
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                        Earnings (Monthly)</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Files</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $totalFiles; ?></div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                    <i class="fas fa-file-pdf fa-2x text-gray-300"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Earnings (Monthly) Card Example -->
+                <!-- Total Links Card -->
                 <div class="col-xl-3 col-md-6 mb-4">
                     <div class="card border-left-success shadow h-100 py-2">
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                        Earnings (Annual)</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Links</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $totalLinks; ?></div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                    <i class="fas fa-link fa-2x text-gray-300"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Earnings (Monthly) Card Example -->
+                <!-- Total Views Card -->
                 <div class="col-xl-3 col-md-6 mb-4">
                     <div class="card border-left-info shadow h-100 py-2">
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks
-                                    </div>
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col-auto">
-                                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
-                                        </div>
-                                        <div class="col">
-                                            <div class="progress progress-sm mr-2">
-                                                <div class="progress-bar bg-info" role="progressbar"
-                                                    style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                                    aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Views</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $totalViews; ?></div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                    <i class="fas fa-eye fa-2x text-gray-300"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Pending Requests Card Example -->
+                <!-- Registered Users Card -->
                 <div class="col-xl-3 col-md-6 mb-4">
                     <div class="card border-left-warning shadow h-100 py-2">
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                        Pending Requests</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Registered Users</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $totalUsers; ?></div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                    <i class="fas fa-users fa-2x text-gray-300"></i>
                                 </div>
                             </div>
                         </div>
