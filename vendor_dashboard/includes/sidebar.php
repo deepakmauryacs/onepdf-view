@@ -30,9 +30,9 @@ $menu = [
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="dashboard">
         <div class="sidebar-brand-icon rotate-n-15">
-            <i class="bi bi-emoji-smile"></i>
+            <i class="bi bi-file-earmark-pdf"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">OnePDF</div>
+        <div class="sidebar-brand-text mx-3">PDFOneLink</div>
     </a>
     <?php foreach ($menu as $item): ?>
         <?php if (isset($item['divider'])): ?>
