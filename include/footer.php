@@ -13,33 +13,23 @@
           </div>
         </div>
         <div class="col-6 col-lg-2">
-          <h6 class="mb-4">Product</h6>
+          <h6 class="mb-4">Quick links</h6>
           <ul>
             <li><a href="/#features">Features</a></li>
             <li><a href="/#pricing">Pricing</a></li>
-            <li><a href="/docs">Documentation</a></li>
-            <li><a href="/status">Status</a></li>
+            <li><a href="/docs">How It Works</a></li>
           </ul>
         </div>
-        <div class="col-6 col-lg-2">
-          <h6 class="mb-4">Company</h6>
-          <ul>
-            <li><a href="/about">About us</a></li>
-            <li><a href="/careers">Careers</a></li>
-            <li><a href="/blog">Blog</a></li>
-            <li><a href="/contact">Contact</a></li>
-          </ul>
-        </div>
+        
         <div class="col-6 col-lg-2">
           <h6 class="mb-4">Contact Us</h6>
           <ul>
-            <li><a href="/contact">Support</a></li>
-            <li><a href="/contact">Sales</a></li>
-            <li><a href="/contact">Partnerships</a></li>
+            <li><a href="/contact">Contact</a></li>
+            <li><a href="javascript:void(0)">Partnerships</a></li>
             <li><a href="/contact">General Inquiry</a></li>
           </ul>
         </div>
-        <div class="col-lg-3">
+        <div class="col-6 col-lg-3">
           <h6 class="mb-4">Newsletter</h6>
           <p class="small mb-3">Get the latest updates, tips, and guides.</p>
           <form id="newsletterForm" class="d-flex gap-2 mb-2" action="/subscribe.php" method="post" novalidate>
