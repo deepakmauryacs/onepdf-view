@@ -91,16 +91,22 @@ include(INCLUDE_PATH . 'topbar.php');
         $stmt->close();
     }
 
+    // Build a base URL (handles subdirectory deployments)
+    $scheme   = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+    $host     = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $basePath = rtrim(dirname(dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
+    $baseUrl  = $scheme . $host . ($basePath ? $basePath . '/' : '/');
+
     if ($docs):
       foreach ($docs as $doc):
         // Build the URL to the stored PDF
         $pdfUrl = '';
         if (!empty($doc['filepath'])) {
-          // if 'filepath' already holds a web path like 'storage/docs/abc.pdf'
-          $pdfUrl = '/' . ltrim($doc['filepath'], '/');
+          // if 'filepath' already holds a relative path like 'uploads/abc.pdf'
+          $pdfUrl = $baseUrl . ltrim($doc['filepath'], '/');
         } else {
           // fallback: assume uploads/<filename>
-          $pdfUrl = '/uploads/' . rawurlencode($doc['filename']);
+          $pdfUrl = $baseUrl . 'uploads/' . rawurlencode($doc['filename']);
         }
     ?>
         <a href="document.php?id=<?php echo (int)$doc['id']; ?>" class="doc-card">
