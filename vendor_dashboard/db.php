@@ -26,6 +26,15 @@ $mysqli->query("CREATE TABLE IF NOT EXISTS users (
     agreed_terms TINYINT(1) NOT NULL DEFAULT 0
 )");
 
+$mysqli->query("CREATE TABLE IF NOT EXISTS user_plan (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    plan_id INT NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE DEFAULT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+)");
+
 // Table for uploaded documents
 $mysqli->query("CREATE TABLE IF NOT EXISTS documents (
     id INT AUTO_INCREMENT PRIMARY KEY,

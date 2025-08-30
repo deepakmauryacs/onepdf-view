@@ -131,6 +131,19 @@
 
 
                 <div class="form-floating mb-3">
+                    <select name="plan_id" class="form-select" id="plan" required>
+                        <option value="" selected>Select Plan</option>
+                        <option value="1">Free - $0</option>
+                        <option value="2">Pro - $12/month</option>
+                        <option value="3">Pro - $499/year</option>
+                        <option value="4">Business - $25/month</option>
+                        <option value="5">Business - $1999/year</option>
+                    </select>
+                    <label for="plan">Plan</label>
+                </div>
+                <div id="plan_id_error" class="error-message"></div>
+
+                <div class="form-floating mb-3">
                     <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com" required>
                     <label for="email">Email address</label>
                 </div>
@@ -179,7 +192,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     
     // Clear previous errors
     document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
-    document.querySelectorAll('.form-control, .form-check-input').forEach(el => el.classList.remove('is-invalid'));
+    document.querySelectorAll('.form-control, .form-select, .form-check-input').forEach(el => el.classList.remove('is-invalid'));
     
     const data = new FormData(form);
     
@@ -202,6 +215,11 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     if (!data.get('company')) {
         document.getElementById('company_error').textContent = 'Company is required.';
         document.getElementById('company').classList.add('is-invalid');
+        valid = false;
+    }
+    if (!data.get('plan_id')) {
+        document.getElementById('plan_id_error').textContent = 'Plan is required.';
+        document.getElementById('plan').classList.add('is-invalid');
         valid = false;
     }
     const email = data.get('email');
