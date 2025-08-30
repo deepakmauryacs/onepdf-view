@@ -269,7 +269,7 @@ include 'include/header.php';
           </div>
           
           <div class="d-flex gap-3 mt-4">
-            <a href="registration.php" class="btn btn-brand"><i class="bi bi-rocket-takeoff me-2"></i>Get started</a>
+            <a href="registration" class="btn btn-brand"><i class="bi bi-rocket-takeoff me-2"></i>Get started</a>
             <a href="/docs" class="btn btn-ghost"><i class="bi bi-journal-text me-2"></i>View docs</a>
           </div>
         </div>
@@ -296,7 +296,7 @@ include 'include/header.php';
               <li><i class="bi bi-x text-muted"></i>Permission controls</li>
               <li><i class="bi bi-x text-muted"></i>Custom branding</li>
             </ul>
-            <a href="registration.php" class="btn btn-ghost w-100">Start free</a>
+            <a href="registration" class="btn btn-ghost w-100">Start free</a>
           </div>
         </div>
         <div class="col-md-6 col-lg-4">
@@ -310,7 +310,7 @@ include 'include/header.php';
               <li><i class="bi bi-check2 check"></i>Custom watermark</li>
               <li><i class="bi bi-check2 check"></i>Link expiry & revocation</li>
             </ul>
-            <a href="registration.php" class="btn btn-brand w-100">Choose Pro</a>
+            <a href="registration" class="btn btn-brand w-100">Choose Pro</a>
           </div>
         </div>
         <div class="col-md-6 col-lg-4">
@@ -373,7 +373,7 @@ include 'include/header.php';
       <div class="cta-section">
         <h2 class="fw-bold mb-3">Start sharing secure, trackable PDFs today</h2>
         <p class="text-muted mb-4">It only takes a minute to set up. No credit card required.</p>
-        <a href="registration.php" class="btn btn-brand btn-lg"><i class="bi bi-rocket-takeoff me-2"></i>Create your free account</a>
+        <a href="registration" class="btn btn-brand btn-lg"><i class="bi bi-rocket-takeoff me-2"></i>Create your free account</a>
       </div>
     </div>
   </section>
