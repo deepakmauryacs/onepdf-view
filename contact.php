@@ -1,4 +1,40 @@
 <?php
+require_once 'config.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    header('Content-Type: application/json');
+
+    $firstName = trim($_POST['firstName'] ?? '');
+    $lastName  = trim($_POST['lastName'] ?? '');
+    $email     = trim($_POST['email'] ?? '');
+    $company   = trim($_POST['company'] ?? '');
+    $subject   = trim($_POST['subject'] ?? '');
+    $message   = trim($_POST['message'] ?? '');
+
+    if ($firstName && $lastName && $email && $subject && $message) {
+        $stmt = $mysqli->prepare(
+            "INSERT INTO contact_messages (first_name, last_name, email, company, subject, message) VALUES (?,?,?,?,?,?)"
+        );
+        if ($stmt) {
+            $stmt->bind_param('ssssss', $firstName, $lastName, $email, $company, $subject, $message);
+            if ($stmt->execute()) {
+                echo json_encode(['success' => true]);
+            } else {
+                http_response_code(500);
+                echo json_encode(['success' => false, 'error' => 'Failed to save message']);
+            }
+            $stmt->close();
+        } else {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'error' => 'Database error']);
+        }
+    } else {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'Missing required fields']);
+    }
+    exit;
+}
+
 $page_title = 'Contact Us - PDFOneLink';
 $page_css = 'assets/webapp/css/contact.css';
 $page_js = 'assets/webapp/js/contact.js';
@@ -30,27 +66,27 @@ include 'include/header.php';
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="firstName" class="form-label">First Name</label>
-                                        <input type="text" class="form-control" id="firstName" required>
+                                        <input type="text" class="form-control" id="firstName" name="firstName" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="lastName" class="form-label">Last Name</label>
-                                        <input type="text" class="form-control" id="lastName" required>
+                                        <input type="text" class="form-control" id="lastName" name="lastName" required>
                                     </div>
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email Address</label>
-                                <input type="email" class="form-control" id="email" required>
+                                <input type="email" class="form-control" id="email" name="email" required>
                             </div>
                             <div class="mb-3">
                                 <label for="company" class="form-label">Company (Optional)</label>
-                                <input type="text" class="form-control" id="company">
+                                <input type="text" class="form-control" id="company" name="company">
                             </div>
                             <div class="mb-3">
                                 <label for="subject" class="form-label">Subject</label>
-                                <select class="form-select" id="subject" required>
+                                <select class="form-select" id="subject" name="subject" required>
                                     <option value="" selected disabled>Select a subject</option>
                                     <option value="sales">Sales Inquiry</option>
                                     <option value="support">Technical Support</option>
@@ -61,7 +97,7 @@ include 'include/header.php';
                             </div>
                             <div class="mb-4">
                                 <label for="message" class="form-label">Message</label>
-                                <textarea class="form-control" id="message" rows="5" required></textarea>
+                                <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
                             </div>
                             <button type="submit" class="btn btn-brand btn-lg w-100">Send Message</button>
                         </form>

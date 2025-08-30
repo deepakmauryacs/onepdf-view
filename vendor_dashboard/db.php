@@ -68,4 +68,16 @@ $colRes = $mysqli->query("SHOW COLUMNS FROM link_analytics LIKE 'created_at'");
 if ($colRes && $colRes->num_rows === 0) {
     $mysqli->query("ALTER TABLE link_analytics ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
 }
+
+// Table for contact form submissions
+$mysqli->query("CREATE TABLE IF NOT EXISTS contact_messages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL,
+    company VARCHAR(100),
+    subject VARCHAR(100) NOT NULL,
+    message TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)");
 ?>
